@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Mega Able bootstrap admin template by codedthemes </title>
+    <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 10]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Mega Able Bootstrap admin template made using Bootstrap 4 and it has huge amount of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
+    <meta name="keywords" content="flat ui, admin Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app">
+    <meta name="author" content="codedthemes" />
+    <!-- Favicon icon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <!-- Google font-->     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap/css/bootstrap.min.css">
+    <!-- waves.css -->
+    <link rel="stylesheet" href="assets/pages/waves/css/waves.min.css" type="text/css" media="all">
+    <!-- themify-icons line icon -->
+    <link rel="stylesheet" type="text/css" href="assets/icon/themify-icons/themify-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" href="assets/icon/font-awesome/css/font-awesome.min.css">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.css">
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" href="assets/icon/icofont/css/icofont.css">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- css -->
+    <style>
+      .content-wrapper {
+         padding: 30px;
+       }
+   
+       .card {
+         border: none;
+         border-radius: 12px;
+         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+         background-color: white;
+       }
+
+      .image-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .image-thumbnail {
+        width: 100px;
+        height: 100px;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .image-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+   
+       .table th,
+       .table td {
+         white-space: nowrap;
+         vertical-align: middle;
+         padding: 12px 15px;
+       }
+   
+       .table thead th {
+         background-color: #f8f9fa;
+         border-bottom: 2px solid #e9ecef;
+         font-weight: 600;
+         color: #495057;
+       }
+   
+       .table tbody tr {
+         transition: all 0.2s;
+       }
+   
+       .table tbody tr:hover {
+         background-color: rgba(37, 211, 102, 0.05);
+       }
+   
+       .table-responsive {
+         overflow-x: auto;
+       }
+   
+       .status-badge {
+         font-size: 0.75rem;
+         padding: 0.4em 0.75em;
+         border-radius: 1rem;
+         font-weight: 500;
+       }
+   
+       .whatsapp-icon {
+         color: #25d366;
+         font-size: 1.2rem;
+         margin-right: 10px;
+         cursor: pointer;
+         transition: transform 0.2s;
+       }
+   
+       .whatsapp-icon:hover {
+         transform: scale(1.1);
+       }
+   
+       .chat-icon {
+         color: #6c757d;
+         font-size: 1.2rem;
+         cursor: pointer;
+         transition: all 0.2s;
+       }
+   
+       .chat-icon:hover {
+         color: #495057;
+       }
+   
+       /* Search and Filter Styles */
+       .filter-section {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 15px;
+         margin-bottom: 25px;
+       }
+       
+       .search-container {
+         position: relative;
+         flex-grow: 1;
+         min-width: 250px;
+         max-width: 400px;
+       }
+       
+       .search-bar {
+         width: 100%;
+         padding: 10px 15px 10px 40px;
+         border-radius: 30px;
+         border: 1px solid #e0e0e0;
+         font-size: 14px;
+         transition: all 0.3s;
+         background-color: #f8f9fa;
+       }
+       
+       .search-bar:focus {
+         outline: none;
+         box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+         border-color: #25d366;
+         background-color: white;
+       }
+       
+       .search-icon {
+         position: absolute;
+         left: 15px;
+         top: 50%;
+         transform: translateY(-50%);
+         color: #6c757d;
+       }
+       
+       .right-controls {
+         display: flex;
+         align-items: center;
+         gap: 15px;
+         flex-wrap: wrap;
+       }
+       
+       .status-filter {
+         min-width: 180px;
+         padding: 10px 15px;
+         border-radius: 30px;
+         border: 1px solid #e0e0e0;
+         font-size: 14px;
+         appearance: none;
+         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+         background-repeat: no-repeat;
+         background-position: right 15px center;
+         background-size: 12px;
+         padding-right: 35px;
+         transition: all 0.3s;
+         background-color: #f8f9fa;
+       }
+       
+       .status-filter:focus {
+         outline: none;
+         box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+         border-color: #25d366;
+         background-color: white;
+       }
+       
+       .add-lead-btn {
+         display: flex;
+         align-items: center;
+         gap: 8px;
+         padding: 10px 20px;
+         border-radius: 30px;
+         font-size: 14px;
+         font-weight: 500;
+         background-color: #25d366;
+         border: none;
+         color: white;
+         transition: all 0.3s;
+         white-space: nowrap;
+       }
+       
+       .add-lead-btn:hover {
+         background-color: #128C7E;
+         transform: translateY(-1px);
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+       }
+       
+       .add-lead-btn:active {
+         transform: translateY(0);
+       }
+       
+       .add-lead-btn i {
+         font-size: 16px;
+       }
+   
+       /* Responsive adjustments */
+       @media (max-width: 768px) {
+         .filter-section {
+           flex-direction: column;
+           align-items: stretch;
+         }
+         
+         .search-container {
+           max-width: 100%;
+         }
+         
+         .right-controls {
+           justify-content: space-between;
+           width: 100%;
+         }
+   
+         .content-wrapper {
+           padding: 20px;
+         }
+   
+         .table th, 
+         .table td {
+           padding: 8px 12px;
+           font-size: 14px;
+         }
+       }
+
+       /* Lead Slider Styles */
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.gallery-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gallery-item .delete-image {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+#imageModal .modal-content {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+#imageModal .btn-close {
+  color: white;
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+#modalImage {
+  max-height: 80vh;
+}
+.lead-slider {
+position: fixed;
+top: 0;
+right: -450px;
+width: 450px;
+height: 100%;
+background-color: white;
+box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+z-index: 1050;
+transition: right 0.3s ease-in-out;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+}
+
+.lead-slider.open {
+right: 0;
+}
+
+.lead-slider-backdrop {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.3);
+z-index: 1049;
+display: none;
+}
+
+.lead-slider-backdrop.show {
+display: block;
+}
+
+.lead-slider-header {
+padding: 20px;
+border-bottom: 1px solid #e9ecef;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #f8f9fa;
+}
+
+.lead-slider-title {
+margin: 0;
+font-size: 1.25rem;
+font-weight: 600;
+color: #344054;
+}
+
+.lead-slider-close {
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+color: #6c757d;
+transition: color 0.2s;
+}
+
+.lead-slider-close:hover {
+color: #dc3545;
+}
+
+.lead-slider-body {
+padding: 20px;
+flex-grow: 1;
+}
+
+.lead-info {
+margin-bottom: 20px;
+}
+
+.lead-info-item {
+margin-bottom: 15px;
+}
+
+.lead-info-label {
+font-size: 12px;
+color: #6c757d;
+margin-bottom: 5px;
+display: block;
+font-weight: 500;
+}
+
+.lead-status-selector {
+width: 100%;
+padding: 8px 12px;
+border-radius: 6px;
+border: 1px solid #d1d5db;
+font-size: 14px;
+margin-bottom: 5px;
+transition: all 0.2s;
+}
+
+.lead-status-selector:focus {
+border-color: #25d366;
+box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+outline: none;
+}
+
+.lead-location-input {
+width: 100%;
+padding: 8px 12px;
+border-radius: 6px;
+border: 1px solid #d1d5db;
+font-size: 14px;
+margin-bottom: 5px;
+transition: all 0.2s;
+}
+
+.lead-location-input:focus {
+border-color: #25d366;
+box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+outline: none;
+}
+
+.lead-timeline {
+border-top: 1px solid #e9ecef;
+margin-top: 20px;
+padding-top: 20px;
+}
+
+.timeline-title {
+font-size: 16px;
+font-weight: 600;
+margin-bottom: 15px;
+color: #344054;
+}
+
+.timeline-item {
+position: relative;
+padding-bottom: 20px;
+padding-left: 30px;
+border-left: 2px solid #e9ecef;
+}
+
+.timeline-item:last-child {
+border-left: 2px solid transparent;
+}
+
+.timeline-date {
+font-size: 12px;
+color: #6c757d;
+margin-bottom: 5px;
+}
+
+.timeline-content {
+padding: 12px 15px;
+background-color: #f8f9fa;
+border-radius: 8px;
+font-size: 14px;
+color: #344054;
+}
+
+.timeline-dot {
+position: absolute;
+left: -9px;
+top: 0;
+width: 16px;
+height: 16px;
+border-radius: 50%;
+background-color: #25d366;
+border: 3px solid white;
+}
+
+.note-input-container {
+margin-top: 20px;
+}
+
+.note-textarea {
+width: 100%;
+padding: 12px 15px;
+border-radius: 8px;
+border: 1px solid #d1d5db;
+min-height: 100px;
+resize: vertical;
+font-size: 14px;
+transition: all 0.2s;
+}
+
+.note-textarea:focus {
+border-color: #25d366;
+box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+outline: none;
+}
+
+.save-details-btn {
+margin-top: 10px;
+padding: 8px 16px;
+background-color: #3b82f6;
+color: white;
+border: none;
+border-radius: 6px;
+font-weight: 500;
+font-size: 14px;
+cursor: pointer;
+transition: all 0.2s;
+margin-right: 10px;
+}
+
+.save-details-btn:hover {
+background-color: #2563eb;
+}
+
+.add-note-btn {
+margin-top: 10px;
+padding: 8px 16px;
+background-color: #25d366;
+color: white;
+border: none;
+border-radius: 6px;
+font-weight: 500;
+font-size: 14px;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.add-note-btn:hover {
+background-color: #128C7E;
+}
+
+.note-actions {
+display: flex;
+align-items: center;
+}
+
+@media (max-width: 576px) {
+.lead-slider {
+width: 100%;
+right: -100%;
+}
+}
+.custom-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #000;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    float: right;
+  }
+
+  .custom-close-btn:hover {
+    color: #dc3545; /* red like Bootstrap danger */
+  }
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.link-item input {
+  height: 35px;
+  border: 1px solid #e4e4e4;
+  border-radius: 4px;
+  padding: 0 12px;
+  background-color: #fff;
+}
+
+.link-item .link-title {
+  flex: 1;
+  min-width: 120px;
+}
+
+.link-item .link-url {
+  flex: 2;
+  min-width: 200px;
+}
+
+.link-item .delete-btn {
+  padding: 6px 10px;
+  color: #dc3545;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.link-item .delete-btn:hover {
+  color: #bb2d3b;
+}
+
+@media (max-width: 768px) {
+  .link-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .link-item .link-title,
+  .link-item .link-url {
+    flex: 1 1 calc(50% - 25px);
+    min-width: 0;
+  }
+  
+  .link-item .delete-btn {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .link-item .link-title,
+  .link-item .link-url {
+    flex: 1 1 100%;
+  }
+}
+
+     </style>
+</head>
+
+<body>
+<!-- Pre-loader start -->
+<div class="theme-loader">
+    <div class="loader-track">
+        <div class="preloader-wrapper">
+            <div class="spinner-layer spinner-blue">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="spinner-layer spinner-red">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            
+            <div class="spinner-layer spinner-yellow">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            
+            <div class="spinner-layer spinner-green">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pre-loader end -->
+<div id="pcoded" class="pcoded">
+    <div class="pcoded-overlay-box"></div>
+    <div class="pcoded-container navbar-wrapper">
+        <nav class="navbar header-navbar pcoded-header">
+            <div class="navbar-wrapper">
+                <div class="navbar-logo">
+                    <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#!">
+                        <i class="ti-menu"></i>
+                    </a>
+                    <div class="mobile-search waves-effect waves-light">
+                        <div class="header-search">
+                            <div class="main-search morphsearch-search">
+                                <div class="input-group">
+                                    <span class="input-group-addon search-close"><i class="ti-close"></i></span>
+                                    <input type="text" class="form-control" placeholder="Enter Keyword">
+                                    <span class="input-group-addon search-btn"><i class="ti-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="index.html">
+                        <img class="img-fluid" src="assets/images/Franchise Bhoomi logo.png"style= "height: 40px; width:100px;" alt="Theme-Logo" />
+                    </a>
+                    <a class="mobile-options waves-effect waves-light">
+                        <i class="ti-more"></i>
+                    </a>
+                </div>
+            
+                <div class="navbar-container container-fluid">
+                    <ul class="nav-left">
+                        <li>
+                            <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                        </li>
+                        <li>
+                            <a href="#!" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
+                                <i class="ti-fullscreen"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav-right">
+                        <li class="header-notification">
+                            <a href="#!" class="waves-effect waves-light">
+                                <i class="ti-bell"></i>
+                                <span class="badge bg-c-red"></span>
+                            </a>
+                            <ul class="show-notification">
+                                <li>
+                                    <h6>Notifications</h6>
+                                    <label class="label label-danger">New</label>
+                                </li>
+                                <li class="waves-effect waves-light">
+                                    <div class="media">
+                                        <img class="d-flex align-self-center img-radius" src="assets/images/avatar-2.jpg" alt="Generic placeholder image">
+                                        <div class="media-body">
+                                            <h5 class="notification-user">John Doe</h5>
+                                            <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                            <span class="notification-time">30 minutes ago</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="waves-effect waves-light">
+                                    <div class="media">
+                                        <img class="d-flex align-self-center img-radius" src="assets/images/avatar-4.jpg" alt="Generic placeholder image">
+                                        <div class="media-body">
+                                            <h5 class="notification-user">Joseph William</h5>
+                                            <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                            <span class="notification-time">30 minutes ago</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="waves-effect waves-light">
+                                    <div class="media">
+                                        <img class="d-flex align-self-center img-radius" src="assets/images/avatar-3.jpg" alt="Generic placeholder image">
+                                        <div class="media-body">
+                                            <h5 class="notification-user">Sara Soudein</h5>
+                                            <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                            <span class="notification-time">30 minutes ago</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="user-profile header-notification">
+                            <a href="#!" class="waves-effect waves-light">
+                                <img src="assets/images/Bespoke logo.webp" class="img-radius" alt="User-Profile-Image">
+                                <span>Naturals</span>
+                                <i class="ti-angle-down"></i>
+                            </a>
+                            <ul class="show-notification profile-notification">
+                                <li class="waves-effect waves-light">
+                                    <a href="#!">
+                                        <i class="ti-settings"></i> Settings
+                                    </a>
+                                </li>
+                                <li class="waves-effect waves-light">
+                                    <a href="auth-normal-sign-in.html">
+                                        <i class="ti-layout-sidebar-left"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+        <div class="pcoded-main-container">
+            <div class="pcoded-wrapper">
+                <nav class="pcoded-navbar">
+                    <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+                    <div class="pcoded-inner-navbar main-menu">
+                        <div class="">
+                            <div class="main-menu-header">
+                                <img class="img-80 img-radius" src="assets/images/Bespoke logo.webp" alt="User-Profile-Image">
+                                <div class="user-details">
+                                    <span id="more-details">Naturals</span>
+                                </div>
+                            </div>
+
+                        </div>
+            
+                        <div class="pcoded-navigation-label" data-i18n="nav.category.navigation"></div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="">
+                                <a href="index.html" class="waves-effect waves-dark">
+                                    <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                                    <span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                            </li>
+                        </li>
+                        <li>
+                            <a href="leads.html" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-user"></i></span>
+                                <span class="pcoded-mtext">Lead Center</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="franchiselocation.html" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-pin"></i></span>
+                                <span class="pcoded-mtext">Locations</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="franchiseloan.html" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-credit-card"></i></span>
+                                <span class="pcoded-mtext">Franchise Loan</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+
+                        <li>
+                            <a href="settings.html" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-settings"></i></span>
+                                <span class="pcoded-mtext">Settings</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>        
+                    </div>
+                </nav>
+                <div class="pcoded-content">
+                    <!-- Page-header start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="page-header-title">
+                                        <h5 class="m-b-10">Lead Management</h5>
+                                        <p class="m-b-0">Keep Every Franchise Outlet Organized</p>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                 <!-- Page-header end -->
+                 
+              
+                <div class="content-wrapper container-fluid">
+                  <div class="filter-section">
+                    <!-- Search Bar (Left) -->
+                    <div class="search-container">
+                      <i class="bi bi-search search-icon"></i>
+                      <input type="text" class="form-control search-bar" placeholder="Search leads by name, email, or phone..." />
+                    </div>
+                    
+                    <!-- Right-aligned Controls -->
+                    <div class="right-controls">
+                      <!-- Date Filter -->
+                        <select class="status-filter" id="dateFilter">
+                          <option value="newest" selected>Newest First</option>
+                          <option value="oldest">Oldest First</option>
+                        </select>
+
+                      <!-- Status Filter -->
+                      <select class="status-filter" id="statusFilter">
+                        <option value="all" selected>All Statuses</option>
+                        <option value="New lead">New lead</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Qualified">Qualified</option>
+                        <option value="Lead won">Lead won</option>
+                        <option value="Not reachable">Not reachable</option>
+                        <option value="Lead lost">Lead lost</option>
+                      </select>
+                      
+                      <!-- Add Lead Button -->
+                      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLeadModal">
+                        <i class="bi bi-plus-circle"></i> Add New Lead
+                      </button>
+
+                    </div>
+                   
+                  </div>
+                  
+                  <div class="card p-3">
+                    <div class="table-responsive">
+                      <table class="table align-middle table-hover" id="leadsTable">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Date & Time</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Location</th>
+                            <th>Source</th>
+                            <th>Stage</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+               <!-- Add this HTML structure before closing body tag -->
+               <div class="lead-slider-backdrop"></div>
+<div class="lead-slider">
+  <div class="lead-slider-header">
+    <h5 class="lead-slider-title">Lead Details</h5>
+    <button class="lead-slider-close">&times;</button>
+  </div>
+  <div class="lead-slider-body">
+    <div class="lead-details">
+    <div class="lead-info">
+      <div class="lead-info-item">
+        <label class="lead-info-label">Name</label>
+        <h6 id="leadName" class="m-0">Loading...</h6>
+      </div>
+      <div class="lead-info-item">
+        <label class="lead-info-label">Email</label>
+        <p id="leadEmail" class="m-0">Loading...</p>
+      </div>
+      <div class="lead-info-item">
+        <label class="lead-info-label">Phone</label>
+        <p id="leadPhone" class="m-0">Loading...</p>
+      </div>
+     
+      <div class="lead-info-item">
+        <label class="lead-info-label">Alternative Phone Number</label>
+        <input type="text" class="lead-location-input" id="leadAltPhoneInput" placeholder="Enter alternative phone number">
+      </div>
+      <div class="lead-info-item">
+        <label class="lead-info-label">Working/Business</label>
+        <input type="text" class="lead-location-input" id="leadBusinessInput" placeholder="Enter working/business details">
+      </div>
+      <div class="lead-info-item">
+        <label class="lead-info-label">Stage</label>
+        <select class="lead-status-selector" id="leadStatusSelect">
+          <option value="New lead">New lead</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Qualified">Qualified</option>
+          <option value="Lead won">Lead won</option>
+          <option value="Not reachable">Not reachable</option>
+          <option value="Lead lost">Lead lost</option>
+        </select>
+      </div>
+       <div class="lead-info-item">
+        <label class="lead-info-label">Phone Status</label>
+        <select class="lead-status-selector" id="phoneStatusSelect">
+          <option value="Ringing not responded">Ringing not responded</option>
+          <option value="Switch off">Switch off</option>
+          <option value="Not reachable">Not reachable</option>
+          <option value="Busy Right now">Busy Right now</option>
+          <option value="Call connected">Call connected</option>
+
+        </select>
+      </div>
+      <div class="lead-info-item">
+        <label class="lead-info-label">Location</label>
+        <input type="text" class="lead-location-input" id="leadLocationInput" placeholder="Enter location">
+      </div>
+      <div class="lead-info-item">
+  <label class="lead-info-label">Upload Images (Max 5)</label>
+  <input type="file" class="form-control" id="leadImageUpload" accept="image/*" multiple>
+  <div id="imageGalleryContainer" class="image-gallery" style="margin-top: 10px;">
+    <!-- Images will be added here dynamically -->
+  </div>
+</div>
+
+<!-- Full-size image modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-white">Image Preview</h5>
+        <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
+          <i class="ti-close"></i>
+        </button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="position-relative">
+          <img id="modalImage" class="img-fluid w-100" src="" alt="Full size image" style="max-height: 80vh; object-fit: contain;">
+          <div class="position-absolute" style="top: 50%; transform: translateY(-50%); width: 100%;">
+            <div class="d-flex justify-content-between px-3">
+              <button class="btn btn-light rounded-circle p-2" id="prevImage">
+                <i class="ti-angle-left"></i>
+              </button>
+              <button class="btn btn-light rounded-circle p-2" id="nextImage">
+                <i class="ti-angle-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 justify-content-between">
+        <span class="text-white" id="imageCounter">Image 1 of 5</span>
+        <button type="button" class="btn btn-danger" onclick="deleteCurrentImage()">
+          <i class="ti-trash mr-1"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+     <!-- <div class="lead-info-item">
+        <label class="lead-info-label">Lead Interest</label>
+        <select class="lead-status-selector" id="leadInterestSelect">
+          <option value="Very Interested">Very Interested</option>
+          <option value="Moderately Interested">Moderately Interested</option>
+          <option value="Slightly Interested">Slightly Interested</option>
+          <option value="Not Interested">Not Interested</option>
+        </select>
+      </div>-->
+
+      <div class="lead-info-item">
+        <label class="lead-info-label">Loan Required</label>
+        <select class="lead-status-selector" id="loanRequiredSelect">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="lead-info-item" id="loanAmountContainer" style="display: none;">
+        <label class="lead-info-label">Loan Amount</label>
+        <input type="number" class="lead-location-input" id="loanAmountInput" placeholder="Enter loan amount">
+      </div>
+
+      <div class="lead-info-item">
+  <label class="lead-info-label">Links</label>
+  <div class="d-flex justify-content-end mb-2">
+    <button id="addLinkBtn" class="btn btn-primary btn-sm">
+      + Add Link
+    </button>
+  </div>
+  <div id="linksContainer"></div>
+</div>
+
+     
+    </div>
+    </div>
+
+    <div class="note-input-container">
+      <label class="lead-info-label">Add Note</label>
+      <textarea class="note-textarea" id="noteInput" placeholder="Type your note here..."></textarea>
+      <div class="note-actions">
+        <button class="save-details-btn" id="saveDetailsBtn">Save Details</button>
+        <button class="add-note-btn" id="addNoteBtn">Add Note</button>
+      </div>
+    </div>
+
+    <div class="lead-timeline">
+      <h6 class="timeline-title">Interaction Timeline</h6>
+      <div id="timelineContainer">
+        <!-- Timeline items will be added here dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addLeadModal" tabindex="-1" aria-labelledby="addLeadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <form action="lead.php" method="POST" >
+  <div class="modal-header">
+    <h5 class="modal-title">Add New Lead</h5>
+    <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
+      <i class="ti-close"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" name="name" required />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email ID</label>
+      <input type="email" class="form-control" id="email" name="email" required />
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="tel" class="form-control" id="phone" name="phone" required />
+    </div>
+    <div class="mb-3">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" class="form-control" id="location" name="location" required />
+    </div>
+    <div class="mb-3">
+      <label for="status" class="form-label">Stage</label>
+      <select class="form-control" id="status" name="status" required>
+        <option value="New lead" selected>New lead</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="source" class="form-label">Lead Source</label>
+      <input type="text" class="form-control" id="source" name="source" required />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <button type="submit" class="btn btn-primary">Add Lead</button>
+  </div>
+</form>
+
+    </div>
+  </div>
+</div>  
+                <div id="styleSelector">
+                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Warning Section Starts -->
+<!-- Older IE warning message -->
+<!--[if lt IE 10]>
+<div class="ie-warning">
+    <h1>Warning!!</h1>
+    <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web browsers
+        to access this website.</p>
+    <div class="iew-container">
+        <ul class="iew-download">
+            <li>
+                <a href="http://www.google.com/chrome/">
+                    <img src="assets/images/browser/chrome.png" alt="Chrome">
+                    <div>Chrome</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.mozilla.org/en-US/firefox/new/">
+                    <img src="assets/images/browser/firefox.png" alt="Firefox">
+                    <div>Firefox</div>
+                </a>
+            </li>
+            <li>
+                <a href="http://www.opera.com">
+                    <img src="assets/images/browser/opera.png" alt="Opera">
+                    <div>Opera</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.apple.com/safari/">
+                    <img src="assets/images/browser/safari.png" alt="Safari">
+                    <div>Safari</div>
+                </a>
+            </li>
+            <li>
+                <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                    <img src="assets/images/browser/ie.png" alt="">
+                    <div>IE (9 & above)</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <p>Sorry for the inconvenience!</p>
+</div>
+<![endif]-->
+<!-- Warning Section Ends -->
+<!-- Required Jquery -->
+    <script type="text/javascript" src="assets/js/jquery/jquery.min.js"></script>     <script type="text/javascript" src="assets/js/jquery-ui/jquery-ui.min.js "></script>     <script type="text/javascript" src="assets/js/popper.js/popper.min.js"></script>     <script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js "></script>
+<!-- waves js -->
+<script src="assets/pages/waves/js/waves.min.js"></script>
+<!-- jquery slimscroll js -->
+<script type="text/javascript" src="assets/js/jquery-slimscroll/jquery.slimscroll.js "></script>
+<!-- modernizr js -->
+    <script type="text/javascript" src="assets/js/SmoothScroll.js"></script>     <script src="assets/js/jquery.mCustomScrollbar.concat.min.js "></script>
+<script src="assets/js/pcoded.min.js"></script>
+<script src="assets/js/vertical-layout.min.js "></script>
+<script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<!-- Custom js -->
+<script type="text/javascript" src="assets/js/script.js"></script>
+
+<!-- Initialize image modal -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Initialize variables
+      const slider = document.querySelector('.lead-slider');
+      const backdrop = document.querySelector('.lead-slider-backdrop');
+      const closeBtn = document.querySelector('.lead-slider-close');
+      const statusSelect = document.getElementById('leadStatusSelect');
+      const locationInput = document.getElementById('leadLocationInput');
+      const noteInput = document.getElementById('noteInput');
+      const addNoteBtn = document.getElementById('addNoteBtn');
+      const saveDetailsBtn = document.getElementById('saveDetailsBtn');
+      const statusFilter = document.getElementById('statusFilter');
+      const dateFilter = document.getElementById('dateFilter');
+      const searchInput = document.querySelector('.search-bar');
+      const leadForm = document.getElementById('leadForm');
+      const tableBody = document.querySelector('#leadsTable tbody');
+      
+      let currentLead = null;
+      let currentSort = 'newest';
+      
+      // Initialize leads data
+      function initializeLeadsData() {
+          let leadsData = localStorage.getItem('leadsData');
+          
+          if (leadsData) {
+              leadsData = JSON.parse(leadsData);
+              tableBody.innerHTML = '';
+              renderLeadsTable(leadsData);
+              return leadsData;
+          }
+          
+          // If no data, initialize from existing table rows
+          leadsData = {};
+          document.querySelectorAll('#leadsTable tbody tr').forEach((row) => {
+              const email = row.querySelector('td:nth-child(3)').textContent.trim();
+                leadsData[email] = createLeadObjectFromRow(row);
+            });
+          
+          saveLeadsDataToLocalStorage(leadsData);
+          return leadsData;
+      }
+      
+      function createLeadObjectFromRow(row) {
+          return {
+              name: row.querySelector('td:nth-child(2)').textContent.trim(),
+              email: row.querySelector('td:nth-child(3)').textContent.trim(),
+              phone: row.querySelector('td:nth-child(4)').textContent.trim(),
+              altPhone: "",
+              business: "",
+              location: row.querySelector('td:nth-child(5)').textContent.trim(),
+              source: row.querySelector('td:nth-child(6)').textContent.trim(),
+              status: row.querySelector('td:nth-child(7) span').textContent.trim(),
+              createdAt: row.querySelector('td:nth-child(1)').textContent.trim(),
+              notes: [],
+              formState: {},
+              images: []
+          };
+      }
+      
+      function getLeadsData() {
+          return JSON.parse(localStorage.getItem('leadsData')) || {};
+      }
+      
+      function saveLeadsDataToLocalStorage(data) {
+          localStorage.setItem('leadsData', JSON.stringify(data));
+      }
+      
+      function updateLeadInStorage(email, updatedData) {
+          const leadsData = getLeadsData();
+          leadsData[email] = { ...leadsData[email], ...updatedData };
+          saveLeadsDataToLocalStorage(leadsData);
+      }
+      
+      function addNoteToLead(email, note) {
+          const leadsData = getLeadsData();
+          if (!leadsData[email].notes) leadsData[email].notes = [];
+          leadsData[email].notes.push(note);
+          saveLeadsDataToLocalStorage(leadsData);
+      }
+      
+      function addLeadToTable(lead) {
+          const newRow = document.createElement('tr');
+          newRow.setAttribute('data-status', lead.status);
+          let createDate = new Date();
+          try {
+              createDate = new Date(lead.createdAt);
+              if (isNaN(createDate.getTime())) {
+                  const parts = lead.createdAt.split(' at ');
+                  if (parts.length > 1) {
+                      createDate = new Date(`${parts[0]} ${parts[1]}`);
+                  }
+              }
+          } catch (e) {
+              console.error("Error parsing date:", lead.createdAt);
+          }
+          
+          newRow.setAttribute('data-created', createDate.getTime());
+          const statusClass = getStatusClass(lead.status);
+          
+          newRow.innerHTML = `
+              <td>${lead.createdAt || new Date().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
+              <td><a href="#" class="lead-name-link" style="color: #25d366; text-decoration: none; font-weight: 500;">${lead.name}</a></td>
+              <td>${lead.email}</td>
+              <td>${lead.phone}</td>
+              <td>${lead.location}</td>
+              <td>${lead.source}</td>
+              <td><span class="badge ${statusClass} status-badge">${lead.status}</span></td>
+              <td>
+                  <i class="bi bi-whatsapp whatsapp-icon"></i>
+                  <i class="bi bi-chat-left-text chat-icon"></i>
+              </td>
+          `;
+          
+          tableBody.appendChild(newRow);
+          
+          newRow.querySelector('.whatsapp-icon').addEventListener('click', function() {
+              openWhatsApp(lead.phone);
+          });
+          
+          newRow.querySelector('.chat-icon').addEventListener('click', function(e) {
+              e.preventDefault();
+              openSlider(lead.email);
+          });
+          
+          newRow.querySelector('.lead-name-link').addEventListener('click', function(e) {
+              e.preventDefault();
+              openSlider(lead.email);
+          });
+      }
+      
+      function renderLeadsTable(leadsData) {
+          tableBody.innerHTML = '';
+          const leadsArray = Object.values(leadsData);
+          
+          leadsArray.sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0);
+              const dateB = new Date(b.createdAt || 0);
+              return currentSort === 'newest' ? dateB - dateA : dateA - dateB;
+          });
+          
+          leadsArray.forEach(lead => {
+              addLeadToTable(lead);
+          });
+          
+          if (statusFilter.value !== 'all') filterByStatus();
+          if (searchInput.value.trim() !== '') searchLeads();
+      }
+      
+      function handleDateFilterChange(value) {
+          currentSort = value;
+          const rows = Array.from(tableBody.querySelectorAll('tr'));
+          const visibleRows = rows.filter(row => {
+              const matchesStatus = statusFilter.value === 'all' || row.getAttribute('data-status') === statusFilter.value;
+              const searchTerm = searchInput.value.toLowerCase();
+              const matchesSearch = searchTerm === '' || row.textContent.toLowerCase().includes(searchTerm);
+              return matchesStatus && matchesSearch;
+          });
+          
+          visibleRows.sort((a, b) => {
+              const timeA = parseInt(a.getAttribute('data-created')) || 0;
+              const timeB = parseInt(b.getAttribute('data-created')) || 0;
+              return currentSort === 'newest' ? timeB - timeA : timeA - timeB;
+          });
+          
+          rows.forEach(row => row.style.display = 'none');
+          visibleRows.forEach(row => {
+              row.style.display = '';
+              tableBody.appendChild(row);
+          });
+      }
+      
+      function openSlider(leadEmail) {
+          currentLead = leadEmail;
+          const lead = getLeadsData()[leadEmail];
+          
+          if (lead) {
+              document.getElementById('leadName').textContent = lead.name;
+              document.getElementById('leadEmail').textContent = lead.email;
+              document.getElementById('leadPhone').textContent = lead.phone;
+              document.getElementById('leadAltPhoneInput').value = lead.altPhone || '';
+              document.getElementById('leadBusinessInput').value = lead.business || '';
+              document.getElementById('leadStatusSelect').value = lead.status;
+              document.getElementById('leadLocationInput').value = lead.location;
+              
+              // Load lead-specific form state
+              loadFormState(leadEmail);
+              
+              // Load lead-specific images
+              loadGallery(leadEmail);
+
+
+
+              // Load lead-specific links
+              const linksContainer = document.getElementById('linksContainer');
+              linksContainer.innerHTML = '';
+              if (lead.links && Array.isArray(lead.links)) {
+                  lead.links.forEach(link => {
+                      linksContainer.appendChild(createLinkElement(link.title, link.url));
+                  });
+              }
+              
+              // Render timeline
+              renderTimeline(lead.notes);
+              setupAddLinkHandler(); // ✅ Add here only ONCE
+          }
+         
+
+          
+          slider.classList.add('open');
+          backdrop.classList.add('show');
+          document.body.style.overflow = 'hidden';
+      }
+      
+      function closeSlider() {
+          slider.classList.remove('open');
+          backdrop.classList.remove('show');
+          document.body.style.overflow = '';
+          currentLead = null;
+      }
+      
+      function renderTimeline(notes) {
+          const container = document.getElementById('timelineContainer');
+          container.innerHTML = '';
+          
+          if (!notes || notes.length === 0) {
+              container.innerHTML = '<p class="text-muted">No interactions recorded yet.</p>';
+              return;
+          }
+          
+          const sortedNotes = [...notes].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          sortedNotes.forEach(note => {
+              const date = new Date(note.timestamp);
+              const formattedDate = `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+              
+              const timelineItem = document.createElement('div');
+              timelineItem.className = 'timeline-item';
+              timelineItem.innerHTML = `
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">${formattedDate}</div>
+                  <div class="timeline-content">
+                      ${note.text || 'Details updated'}
+                      ${note.statusChange ? `<div class="mt-2"><strong>Status changed to:</strong> ${note.statusChange}</div>` : ''}
+                      ${note.locationChange ? `<div class="mt-2"><strong>Location updated to:</strong> ${note.locationChange}</div>` : ''}
+                      ${note.altPhoneChange ? `<div class="mt-2"><strong>Alternative Phone updated to:</strong> ${note.altPhoneChange}</div>` : ''}
+                      ${note.businessChange ? `<div class="mt-2"><strong>Working/Business updated to:</strong> ${note.businessChange}</div>` : ''}
+                  </div>
+              `;
+              container.appendChild(timelineItem);
+          });
+      }
+      
+      // Load lead-specific form state
+      function loadFormState(email) {
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.formState) return;
+          
+          const formState = lead.formState;
+          document.getElementById('phoneStatusSelect').value = formState.phoneStatus || '';
+          document.getElementById('loanRequiredSelect').value = formState.loanRequired || '';
+          document.getElementById('loanAmountInput').value = formState.loanAmount || '';
+          document.getElementById('leadStatusSelect').value = formState.leadStage || '';
+          document.getElementById('phoneStatusSelect').value = formState.phoneStatus || '';
+
+
+          document.getElementById('loanAmountContainer').style.display = 
+              formState.loanRequired === 'Yes' ? 'block' : 'none';
+      }
+      
+      // Save lead-specific form state
+      function saveFormState() {
+          if (!currentLead) return;
+          
+          const formState = {
+              phoneStatus: document.getElementById('phoneStatusSelect').value,
+              loanRequired: document.getElementById('loanRequiredSelect').value,
+              loanAmount: document.getElementById('loanAmountInput').value,
+              leadStage: document.getElementById('leadStatusSelect').value
+
+          };
+          
+          const leadsData = getLeadsData();
+          leadsData[currentLead].formState = formState;
+          saveLeadsDataToLocalStorage(leadsData);
+      }
+      
+      // Load lead-specific image gallery
+      function loadGallery(email) {
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const gallery = document.getElementById('imageGalleryContainer');
+          gallery.innerHTML = '';
+          
+          lead.images.forEach((img, index) => {
+              addImageToGallery(img, index, email);
+          });
+      }
+      
+      // Add image to gallery
+      function addImageToGallery(imageData, index, email) {
+          const gallery = document.getElementById('imageGalleryContainer');
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          div.innerHTML = `
+              <img src="${imageData.src}" alt="${imageData.name}" onclick="openImageModal(${index}, '${email}')">
+              <button class="delete-image" onclick="deleteImage(${index}, '${email}')">×</button>
+          `;
+          gallery.appendChild(div);
+      }
+      
+      // Handle image upload
+      function handleImageUpload(e) {
+          if (!currentLead) return;
+          
+          const files = Array.from(e.target.files);
+          const leadsData = getLeadsData();
+          const images = leadsData[currentLead].images || [];
+          const remainingSlots = 5 - images.length;
+          
+          if (files.length > remainingSlots) {
+              alert(`You can only upload ${remainingSlots} more image${remainingSlots !== 1 ? 's' : ''}`);
+              return;
+          }
+          
+          files.forEach(file => {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  const imageData = {
+                      src: e.target.result,
+                      name: file.name,
+                      timestamp: new Date().toISOString()
+                  };
+                  images.push(imageData);
+                  leadsData[currentLead].images = images;
+                  saveLeadsDataToLocalStorage(leadsData);
+                  addImageToGallery(imageData, images.length - 1, currentLead);
+                  
+              };
+              reader.readAsDataURL(file);
+          });
+      }
+      
+      // Open image modal
+      function openImageModal(index, email) {
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const modalImage = document.getElementById('modalImage');
+          modalImage.src = lead.images[index].src;
+          
+          // Store current image index and lead email for navigation
+          localStorage.setItem('currentImageIndex', index);
+          localStorage.setItem('currentImageLead', email);
+          
+          updateImageCounter();
+          updateNavigationButtons();
+          
+          // Show modal
+          const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+          imageModal.show();
+      }
+      
+      // Update image counter
+      function updateImageCounter() {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          document.getElementById('imageCounter').textContent = 
+              `Image ${currentIndex + 1} of ${lead.images.length}`;
+      }
+      
+      // Update navigation buttons
+      function updateNavigationButtons() {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const images = lead.images;
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          
+          document.getElementById('prevImage').style.display = 
+              currentIndex > 0 ? 'block' : 'none';
+          document.getElementById('nextImage').style.display = 
+              currentIndex < images.length - 1 ? 'block' : 'none';
+      }
+      
+      // Navigate images
+      function navigateImages(e) {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const images = lead.images;
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          const direction = e.target.id === 'prevImage' ? -1 : 1;
+          const newIndex = currentIndex + direction;
+          
+          if (newIndex >= 0 && newIndex < images.length) {
+              localStorage.setItem('currentImageIndex', newIndex);
+              document.getElementById('modalImage').src = images[newIndex].src;
+              updateImageCounter();
+              updateNavigationButtons();
+          }
+      }
+      
+      // Delete image
+      function deleteImage(index, email) {
+          const leadsData = getLeadsData();
+          leadsData[email].images.splice(index, 1);
+          saveLeadsDataToLocalStorage(leadsData);
+          loadGallery(email);
+      }
+      
+      // Form update handlers
+      function updatePhoneStatus() {
+          if (!currentLead) return;
+          saveFormState();
+          
+          addNoteToLead(currentLead, {
+              text: `Call Status updated to: ${this.value}`,
+              timestamp: new Date().toISOString()
+          });
+          
+          const lead = getLeadsData()[currentLead];
+          renderTimeline(lead.notes);
+      }
+      
+    
+      function updateLoanRequirement() {
+          if (!currentLead) return;
+          saveFormState();
+          
+          document.getElementById('loanAmountContainer').style.display = 
+              this.value === 'Yes' ? 'block' : 'none';
+          
+          addNoteToLead(currentLead, {
+              text: `Loan Requirement updated to: ${this.value}`,
+              timestamp: new Date().toISOString()
+          });
+          
+          const lead = getLeadsData()[currentLead];
+          renderTimeline(lead.notes);
+      }
+      
+      function updateLoanAmount() {
+          if (!this.value || !currentLead) return;
+          saveFormState();
+          
+          addNoteToLead(currentLead, {
+              text: `Loan Amount updated to: ₹${this.value}`,
+              timestamp: new Date().toISOString()
+          });
+          
+          const lead = getLeadsData()[currentLead];
+          renderTimeline(lead.notes);
+      }
+      
+      function updateLeadStage() {
+          if (!currentLead) return;
+          saveFormState();
+          
+          addNoteToLead(currentLead, {
+              text: `Lead Stage updated to: ${this.value}`,
+              timestamp: new Date().toISOString()
+          });
+          
+          const lead = getLeadsData()[currentLead];
+          renderTimeline(lead.notes);
+      }
+      
+      function addNote() {
+          if (!currentLead) return;
+          
+          const noteText = noteInput.value.trim();
+          if (!noteText) {
+              alert('Please enter a note');
+              return;
+          }
+          
+          const lead = getLeadsData()[currentLead];
+          const newStatus = statusSelect.value;
+          const newLocation = locationInput.value.trim();
+          const newAltPhone = document.getElementById('leadAltPhoneInput').value.trim();
+          const newBusiness = document.getElementById('leadBusinessInput').value.trim();
+
+          // Save links
+          const linkElements = document.querySelectorAll('#linksContainer .link-item');
+          const links = Array.from(linkElements).map(linkElement => ({
+              title: linkElement.querySelector('input[placeholder="Link Title"]').value.trim(),
+              url: linkElement.querySelector('input[placeholder="URL"]').value.trim()
+          })).filter(link => link.title || link.url);
+          lead.links = links;
+          
+          const note = { text: noteText, timestamp: new Date().toISOString() };
+          const changesMade = trackChanges(lead, note, newStatus, newLocation, newAltPhone, newBusiness);
+          
+          if (changesMade) {
+              updateLeadInStorage(currentLead, {
+                  status: newStatus,
+                  location: newLocation,
+                  altPhone: newAltPhone,
+                  business: newBusiness
+              });
+          }
+          
+          addNoteToLead(currentLead, note);
+          renderTimeline(getLeadsData()[currentLead].notes);
+          noteInput.value = '';
+      }
+      
+      function saveLeadDetails() {
+          if (!currentLead) return;
+          
+          const lead = getLeadsData()[currentLead];
+          const newStatus = statusSelect.value;
+          const newLocation = locationInput.value.trim();
+          const newAltPhone = document.getElementById('leadAltPhoneInput').value.trim();
+          const newBusiness = document.getElementById('leadBusinessInput').value.trim();
+
+          // Save links
+          const linkElements = document.querySelectorAll('#linksContainer .link-item');
+          const links = Array.from(linkElements).map(linkElement => ({
+              title: linkElement.querySelector('input[placeholder="Link Title"]').value.trim(),
+              url: linkElement.querySelector('input[placeholder="URL"]').value.trim()
+          })).filter(link => link.title || link.url);
+          
+          const note = { timestamp: new Date().toISOString() };
+          const changesMade = trackChanges(lead, note, newStatus, newLocation, newAltPhone, newBusiness, links);
+          
+          if (changesMade) {
+              updateLeadInStorage(currentLead, {
+                  status: newStatus,
+                  location: newLocation,
+                  altPhone: newAltPhone,
+                  business: newBusiness,
+                  links: links
+              });
+              addNoteToLead(currentLead, note);
+              renderTimeline(getLeadsData()[currentLead].notes);
+              alert('Lead details saved successfully!');
+          } else {
+              alert('No changes detected to save.');
+          }
+      }
+      
+      function trackChanges(lead, note, newStatus, newLocation, newAltPhone, newBusiness) {
+          let changesMade = false;
+          
+          if (newStatus !== lead.status) {
+              note.statusChange = newStatus;
+              changesMade = true;
+              updateStatusInTable(lead.email, newStatus);
+          }
+          
+          if (newLocation !== lead.location) {
+              note.locationChange = newLocation;
+              changesMade = true;
+              updateLocationInTable(lead.email, newLocation);
+          }
+          
+          if (newAltPhone !== (lead.altPhone || '')) {
+              note.altPhoneChange = newAltPhone;
+              changesMade = true;
+          }
+          
+          if (newBusiness !== (lead.business || '')) {
+              note.businessChange = newBusiness;
+              changesMade = true;
+          }
+          
+          return changesMade;
+      }
+      
+      function updateStatusInTable(email, newStatus) {
+          const row = findLeadRowByEmail(email);
+          if (row) {
+              const badge = row.querySelector('td:nth-child(7) span');
+              badge.textContent = newStatus;
+              badge.className = 'badge status-badge ' + getStatusClass(newStatus);
+              row.setAttribute('data-status', newStatus);
+          }
+      }
+      
+      function updateLocationInTable(email, newLocation) {
+          const row = findLeadRowByEmail(email);
+          if (row) row.querySelector('td:nth-child(5)').textContent = newLocation;
+      }
+      
+      function findLeadRowByEmail(email) {
+          return Array.from(document.querySelectorAll('#leadsTable tbody tr'))
+              .find(row => row.querySelector('td:nth-child(3)').textContent.trim() === email);
+      }
+      
+      function openWhatsApp(phoneNumber) {
+          const cleaned = phoneNumber.replace(/\D/g, '');
+          if (/^[6-9]\d{9}$/.test(cleaned)) {
+              window.open(`https://wa.me/+91${cleaned}`, '_blank');
+          } else {
+              alert('Please provide a valid 10-digit Indian mobile number (starts with 6,7,8, or 9)');
+          }
+      }
+      
+      function filterByStatus() {
+          const status = statusFilter.value;
+          document.querySelectorAll('#leadsTable tbody tr').forEach(row => {
+              row.style.display = status === 'all' || row.getAttribute('data-status') === status ? '' : 'none';
+          });
+          handleDateFilterChange(currentSort);
+      }
+      
+      function searchLeads() {
+          const term = searchInput.value.toLowerCase();
+          document.querySelectorAll('#leadsTable tbody tr').forEach(row => {
+              row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+          });
+      }
+      
+      function getStatusClass(status) {
+          switch (status.toLowerCase()) {
+              case 'new lead': return 'bg-primary';
+              case 'contacted': return 'bg-warning text-dark';
+              case 'qualified': return 'bg-info text-white';
+              case 'lead won': return 'bg-success';
+              case 'not reachable': return 'bg-dark';
+              case 'lead lost': return 'bg-danger';
+              default: return 'bg-secondary';
+          }
+      }
+      
+      function handleLeadFormSubmit() {
+          const name = document.getElementById('name').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const phone = document.getElementById('phone').value.trim();
+          const location = document.getElementById('location').value.trim();
+          const status = document.getElementById('status').value.trim();
+          const source = document.getElementById('source').value.trim();
+          
+          if (!name || !email || !phone || !location || !status || !source) {
+              alert('All fields are required.');
+              return;
+          }
+          
+          const leadsData = getLeadsData();
+          if (leadsData[email]) {
+              alert('A lead with this email already exists!');
+              return;
+          }
+          
+          const now = new Date();
+          const dateTime = now.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+          
+          const newLead = {
+              name,
+              email,
+              phone,
+              altPhone: "",
+              business: "",
+              location,
+              source,
+              status,
+              createdAt: dateTime,
+              notes: [],
+              formState: {
+                leadStage: status,
+        phoneStatus: '',
+        
+        loanRequired: '',
+        loanAmount: ''
+              },
+              images: []
+          };
+          
+          const updatedLeadsData = getLeadsData();
+          updatedLeadsData[email] = newLead;
+          saveLeadsDataToLocalStorage(updatedLeadsData);
+          
+          if (currentSort === 'newest') {
+              const newRow = document.createElement('tr');
+              newRow.setAttribute('data-status', newLead.status);
+              newRow.setAttribute('data-created', now.getTime());
+              const statusClass = getStatusClass(newLead.status);
+              
+              newRow.innerHTML = `
+                  <td>${dateTime}</td>
+                  <td><a href="#" class="lead-name-link" style="color: #25d366; text-decoration: none; font-weight: 500;">${name}</a></td>
+                  <td>${email}</td>
+                  <td>${phone}</td>
+                  <td>${location}</td>
+                  <td>${source}</td>
+                  <td><span class="badge ${statusClass} status-badge">${status}</span></td>
+                  <td>
+                      <i class="bi bi-whatsapp whatsapp-icon"></i>
+                      <i class="bi bi-chat-left-text chat-icon"></i>
+                  </td>
+              `;
+              
+              if (tableBody.firstChild) {
+                  tableBody.insertBefore(newRow, tableBody.firstChild);
+              } else {
+                  tableBody.appendChild(newRow);
+              }
+              
+              newRow.querySelector('.whatsapp-icon').addEventListener('click', function() {
+                  openWhatsApp(phone);
+              });
+              
+              newRow.querySelector('.chat-icon').addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openSlider(email);
+              });
+              
+              newRow.querySelector('.lead-name-link').addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openSlider(email);
+              });
+          } else {
+              renderLeadsTable(updatedLeadsData);
+          }
+          
+          document.getElementById('leadForm').reset();
+          bootstrap.Modal.getInstance(document.getElementById('addLeadModal')).hide();
+      }
+      
+      function createLinkElement(title = '', url = '') {
+    const linkContainer = document.createElement('div');
+    linkContainer.className = 'link-item';
+    
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.className = 'link-title';
+    titleInput.placeholder = 'Link Title';
+    titleInput.value = title;
+    
+    const urlInput = document.createElement('input');
+    urlInput.type = 'url';
+    urlInput.className = 'link-url';
+    urlInput.placeholder = 'https://example.com';
+    urlInput.value = url;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.innerHTML = '<i class="ti-trash"></i>';
+    deleteBtn.onclick = function() {
+        linkContainer.remove();
+        saveLinks();
+    };
+    
+    linkContainer.appendChild(titleInput);
+    linkContainer.appendChild(urlInput);
+    linkContainer.appendChild(deleteBtn);
+    
+    titleInput.addEventListener('change', saveLinks);
+    urlInput.addEventListener('change', saveLinks);
+    
+    return linkContainer;
+}
+
+      function saveLinks() {
+    const currentEmail = currentLead;
+    if (!currentEmail) return;
+
+    const links = [];
+    document.querySelectorAll('.link-item').forEach(item => {
+        const title = item.querySelector('.link-title').value.trim();
+        const url = item.querySelector('.link-url').value.trim();
+        if (title || url) {
+            links.push({ title, url });
+        }
+    });
+
+    const leadsData = getLeadsData();
+    if (leadsData[currentEmail]) {
+        leadsData[currentEmail].links = links;
+        saveLeadsDataToLocalStorage(leadsData);
+    }
+}
+
+      // Initialize leads data
+      let leadsData = initializeLeadsData();
+      
+      // Attach event listeners
+      closeBtn.addEventListener('click', closeSlider);
+      backdrop.addEventListener('click', closeSlider);
+      addNoteBtn.addEventListener('click', addNote);
+      saveDetailsBtn.addEventListener('click', saveLeadDetails);
+      
+      document.getElementById('leadImageUpload').addEventListener('change', handleImageUpload);
+      document.getElementById('prevImage').addEventListener('click', navigateImages);
+      document.getElementById('nextImage').addEventListener('click', navigateImages);
+      
+      document.getElementById('phoneStatusSelect').addEventListener('change', updatePhoneStatus);
+      document.getElementById('loanRequiredSelect').addEventListener('change', updateLoanRequirement);
+     
+      document.getElementById('loanAmountInput').addEventListener('change', updateLoanAmount);
+     // document.getElementById('leadStatusSelect').addEventListener('change', updateLeadStage);
+
+      
+      statusFilter.addEventListener('change', filterByStatus);
+      dateFilter.addEventListener('change', function() {
+          handleDateFilterChange(this.value);
+      });
+      searchInput.addEventListener('input', searchLeads);
+     
+      
+      // Set initial sort order
+      handleDateFilterChange('newest');
+      
+      // Initialize the table row event listeners
+      document.querySelectorAll('.whatsapp-icon').forEach(icon => {
+          icon.addEventListener('click', function() {
+              const phone = this.closest('tr').querySelector('td:nth-child(4)').textContent.trim();
+              openWhatsApp(phone);
+          });
+      });
+      
+      document.querySelectorAll('.chat-icon').forEach(icon => {
+          icon.addEventListener('click', function(e) {
+              e.preventDefault();
+              const email = this.closest('tr').querySelector('td:nth-child(3)').textContent.trim();
+              openSlider(email);
+          });
+      });
+      
+      document.querySelectorAll('.lead-name-link').forEach(link => {
+          link.addEventListener('click', function(e) {
+              e.preventDefault();
+              const email = this.closest('tr').querySelector('td:nth-child(3)').textContent.trim();
+              openSlider(email);
+          });
+      });
+      leadForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  handleLeadFormSubmit();
+  setupAddLinkHandler();
+});
+
+function setupAddLinkHandler() {
+  const addLinkBtn = document.getElementById('addLinkBtn');
+
+  if (addLinkBtn) {
+    // Remove previous listeners (by cloning and replacing the element)
+    const newBtn = addLinkBtn.cloneNode(true);
+    addLinkBtn.parentNode.replaceChild(newBtn, addLinkBtn);
+
+    newBtn.addEventListener('click', function () {
+      const linksContainer = document.getElementById('linksContainer');
+      if (linksContainer) {
+        linksContainer.appendChild(createLinkElement());
+      }
+    });
+  }
+}
+
+
+
+window.openImageModal = openImageModal;
+window.deleteImage = deleteImage;
+window.deleteCurrentImage = function () {
+  const email = localStorage.getItem('currentImageLead');
+  const index = parseInt(localStorage.getItem('currentImageIndex'));
+  deleteImage(index, email);
+  document.querySelector('.modal .btn-close')?.click();
+};
+  });
+</script>
+
+<script>
+// filepath: c:\Users\ADMIN\Downloads\franchisebhoomiDashboard-main\franchisebhoomiDashboard-main\leads.html
+(function() {
+  // Add this function to generate different times for each lead
+  function dateOffset(mins) {
+    const now = new Date();
+    return new Date(now.getTime() - mins * 60000).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  let leadsData = JSON.parse(localStorage.getItem('leadsData') || '{}');
+  if (Object.keys(leadsData).length === 0) {
+    const now = new Date();
+    leadsData["john.doe@example.com"] = {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      phone: "9876543210",
+      altPhone: "9123456789",
+      business: "Retail",
+      location: "Mumbai",
+      source: "Website",
+      status: "New lead",
+      createdAt: dateOffset(0),
+      notes: [
+        { text: "Initial inquiry received.", timestamp: now.toISOString() }
+      ],
+      formState: {
+        leadStage: "New lead",
+        phoneStatus: "Ringing not responded",
+        loanRequired: "No",
+        loanAmount: ""
+      },
+      images: [],
+      links: []
+    };
+
+    leadsData["jane.smith@example.com"] = {
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      phone: "9123456780",
+      altPhone: "9876501234",
+      business: "Salon",
+      location: "Delhi",
+      source: "Facebook",
+      status: "Contacted",
+      createdAt: dateOffset(30),
+      notes: [
+        { text: "Contacted via Facebook.", timestamp: new Date(now.getTime() - 30 * 60000).toISOString() }
+      ],
+      formState: {
+        leadStage: "Contacted",
+        phoneStatus: "Call connected",
+        loanRequired: "Yes",
+        loanAmount: "200000"
+      },
+      images: [],
+      links: []
+    };
+    leadsData["rahul.kumar@example.com"] = {
+      name: "Rahul Kumar",
+      email: "rahul.kumar@example.com",
+      phone: "9988776655",
+      altPhone: "",
+      business: "Cafe",
+      location: "Bangalore",
+      source: "Google Ads",
+      status: "Qualified",
+      createdAt: dateOffset(60),
+      notes: [
+        { text: "Qualified after call.", timestamp: new Date(now.getTime() - 60 * 60000).toISOString() }
+      ],
+      formState: {
+        leadStage: "Qualified",
+        phoneStatus: "Call connected",
+        loanRequired: "No",
+        loanAmount: ""
+      },
+      images: [],
+      links: []
+    };
+    leadsData["priya.mehta@example.com"] = {
+      name: "Priya Mehta",
+      email: "priya.mehta@example.com",
+      phone: "9001122334",
+      altPhone: "9009988776",
+      business: "Boutique",
+      location: "Ahmedabad",
+      source: "Instagram",
+      status: "Lead won",
+      createdAt: dateOffset(90),
+      notes: [
+        { text: "Lead converted successfully.", timestamp: new Date(now.getTime() - 90 * 60000).toISOString() }
+      ],
+      formState: {
+        leadStage: "Lead won",
+        phoneStatus: "Call connected",
+        loanRequired: "No",
+        loanAmount: ""
+      },
+      images: []
+    };
+    leadsData["arjun.rana@example.com"] = {
+      name: "Arjun Rana",
+      email: "arjun.rana@example.com",
+      phone: "9812345678",
+      altPhone: "",
+      business: "Gym",
+      location: "Chennai",
+      source: "Referral",
+      status: "Lead lost",
+      createdAt: dateOffset(120),
+      notes: [
+        { text: "Not interested at this time.", timestamp: new Date(now.getTime() - 120 * 60000).toISOString() }
+      ],
+      formState: {
+        leadStage: "Lead lost",
+        phoneStatus: "Not reachable",
+        loanRequired: "No",
+        loanAmount: ""
+      },
+      images: [],
+      links: []
+    };
+    localStorage.setItem('leadsData', JSON.stringify(leadsData));
+  }
+})();
+</script>
+</body>
+
+</html>
