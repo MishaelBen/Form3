@@ -1072,50 +1072,52 @@ right: -100%;
 <div class="modal fade" id="addLeadModal" tabindex="-1" aria-labelledby="addLeadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-    <form action="lead.php" method="POST" >
-  <div class="modal-header">
-    <h5 class="modal-title">Add New Lead</h5>
-    <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
-      <i class="ti-close"></i>
-    </button>
+      <form action="lead.php" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Lead</h5>
+          <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
+            <i class="ti-close"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email ID</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required />
+          </div>
+          <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" required />
+          </div>
+          <div class="mb-3">
+            <label for="stage" class="form-label">Stage</label>
+            <select class="form-control" id="stage" name="stage" required>
+              <option value="New lead" selected>New lead</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="lead_source" class="form-label">Lead Source</label>
+            <input type="text" class="form-control" id="lead_source" name="lead_source" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Lead</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <div class="modal-body">
-    <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
-      <input type="text" class="form-control" id="name" name="name" required />
-    </div>
-    <div class="mb-3">
-      <label for="email" class="form-label">Email ID</label>
-      <input type="email" class="form-control" id="email" name="email" required />
-    </div>
-    <div class="mb-3">
-      <label for="phone" class="form-label">Phone Number</label>
-      <input type="tel" class="form-control" id="phone" name="phone" required />
-    </div>
-    <div class="mb-3">
-      <label for="location" class="form-label">Location</label>
-      <input type="text" class="form-control" id="location" name="location" required />
-    </div>
-    <div class="mb-3">
-      <label for="status" class="form-label">Stage</label>
-      <select class="form-control" id="status" name="status" required>
-        <option value="New lead" selected>New lead</option>
-      </select>
-    </div>
-    <div class="mb-3">
-      <label for="source" class="form-label">Lead Source</label>
-      <input type="text" class="form-control" id="source" name="source" required />
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-    <button type="submit" class="btn btn-primary">Add Lead</button>
-  </div>
-</form>
-
-    </div>
-  </div>
-</div>  
+</div>
+  
                 <div id="styleSelector">
                 
                 </div>
