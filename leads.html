@@ -365,11 +365,13 @@ transition: color 0.2s;
 
 .lead-slider-close:hover {
 color: #dc3545;
+
 }
 
 .lead-slider-body {
 padding: 20px;
 flex-grow: 1;
+
 }
 
 .lead-info {
@@ -915,9 +917,10 @@ right: -100%;
                <!-- Add this HTML structure before closing body tag -->
                <div class="lead-slider-backdrop"></div>
 <div class="lead-slider">
+
   <div class="lead-slider-header">
     <h5 class="lead-slider-title">Lead Details</h5>
-    <button class="lead-slider-close">&times;</button>
+    <button type ="button" class="lead-slider-close">&times;</button>
   </div>
   <div class="lead-slider-body">
     <div class="lead-details">
@@ -1183,6 +1186,54 @@ right: -100%;
 
 <!-- Initialize image modal -->
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const saveBtn = document.getElementById('saveDetailsBtn');
+  if (!saveBtn) {
+    console.error('❌ Button with ID "saveDetailsBtn" not found!');
+    return;
+  }
+  status: "New"
+
+
+  saveBtn.addEventListener('click', function () {
+    const data = {
+  
+  name: document.getElementById('leadName').innerText.trim(),
+  email: document.getElementById('leadEmail').innerText.trim(),
+  phone: document.getElementById('leadPhone').innerText.trim(),
+  alt_phone: document.getElementById('leadAltPhoneInput').value,
+  business_details: document.getElementById('leadBusinessInput').value,
+  stage: document.getElementById('leadStatusSelect').value,
+  phone_status: document.getElementById('phoneStatusSelect').value,
+  location: document.getElementById('leadLocationInput').value,
+  loan_required: document.getElementById('loanRequiredSelect').value,
+  loan_amount: document.getElementById('loanAmountInput').value,
+  links: document.getElementById('linksContainer').innerText,
+  note: document.getElementById('noteInput').value,
+  status: "New"
+};
+
+    console.log("Submitting:", data);
+
+    fetch("http://localhost:81/form3_new/save_lead.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(res => {
+      alert(res);
+      console.log(res);
+    })
+    .catch(err => {
+      console.error("❌ Fetch error:", err);
+      alert("Error saving data");
+    });
+  });
+});
+</script>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1289,7 +1340,8 @@ right: -100%;
           
           newRow.innerHTML = `
               <td>${lead.createdAt || new Date().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
-              <td><a href="#" class="lead-name-link" style="color: #25d366; text-decoration: none; font-weight: 500;">${lead.name}</a></td>
+              <td><a href="#" class="lead-name-link" data-id="${lead.id}" style="color: #25d366; text-decoration: none; font-weight: 500;">${lead.name}</a></td>
+
               <td>${lead.email}</td>
               <td>${lead.phone}</td>
               <td>${lead.location}</td>
@@ -2182,6 +2234,51 @@ window.deleteCurrentImage = function () {
   }
 })();
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Make sure leadList is already available in the global scope
+  // leadList = [{ id: 1, name: "John", email: "...", phone: "...", etc. }, ...]
+
+  document.querySelectorAll('.lead-name-link').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const leadId = this.getAttribute('data-id');
+      const lead = leadList.find(l => l.id == leadId);
+
+      if (!lead) {
+        alert('Lead not found!');
+        return;
+      }
+
+      // Fill the lead slider fields
+      document.getElementById('leadIdInput').value = lead.id;
+      document.getElementById('leadName').textContent = lead.name;
+      document.getElementById('leadEmail').textContent = lead.email;
+      document.getElementById('leadPhone').textContent = lead.phone;
+      document.getElementById('leadAltPhoneInput').value = lead.alt_phone || '';
+      document.getElementById('leadBusinessInput').value = lead.business_details || '';
+      document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
+      document.getElementById('phoneStatusSelect').value = lead.phone_status || '';
+      document.getElementById('leadLocationInput').value = lead.location || '';
+      document.getElementById('loanRequiredSelect').value = lead.loan_required || 'No';
+      document.getElementById('loanAmountInput').value = lead.loan_amount || '';
+      document.getElementById('noteInput').value = lead.note || '';
+
+      // Show the slider (or slide it in with a class)
+      document.querySelector('.lead-slider').classList.add('open');
+    });
+  });
+
+  // Optional: Close button functionality
+  document.querySelector('.lead-slider-close').addEventListener('click', () => {
+    document.querySelector('.lead-slider').classList.remove('open');
+  });
+});
+</script>
+
+
 </body>
 
 </html>
