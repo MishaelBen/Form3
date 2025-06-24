@@ -1,26 +1,46 @@
 <?php
 header('Content-Type: application/json');
+
+// Database config
 $host = "127.0.0.1";
 $port = 3306;
 $username = "root";
 $password = "";
 $database = "leads";
 
+// Connect to MySQL
 $conn = new mysqli($host, $username, $password, $database, $port);
+
+// Handle connection error
 if ($conn->connect_error) {
-    die(json_encode(['error' => $conn->connect_error]));
+    http_response_code(500);
+    echo json_encode(['error' => "Database connection failed: " . $conn->connect_error]);
+    exit;
 }
 
-// Get all leads
+// Run query to fetch leads
 $sql = "SELECT * FROM client_leads ORDER BY created_at DESC";
 $result = $conn->query($sql);
 
+if (!$result) {
+    http_response_code(500);
+    echo json_encode(['error' => "Query error: " . $conn->error]);
+    exit;
+}
+
 $leads = [];
 while ($row = $result->fetch_assoc()) {
-    // Decode timeline notes if stored as JSON
-    $row['note'] = $row['note'] ? json_decode($row['note'], true) : [];
+    // Safely decode `note` JSON if present
+    if (!empty($row['note'])) {
+        $decodedNote = json_decode($row['note'], true);
+        $row['note'] = is_array($decodedNote) ? $decodedNote : [];
+    } else {
+        $row['note'] = [];
+    }
+
     $leads[] = $row;
 }
 
 echo json_encode($leads);
 $conn->close();
+?>

@@ -892,25 +892,22 @@ right: -100%;
                   
                   <div class="card p-3">
                     <div class="table-responsive">
-                      <table class="table align-middle table-hover" id="leadsTable">
-                        <thead class="table-light">
-                          <tr>
-                            <th>Date & Time</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Location</th>
-                            <th>Source</th>
-                            <th>Stage</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          
+<table class="table table-bordered" id="leadsTable">
+  <thead class="table-dark">
+    <tr>
+      <th>Created</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Location</th>
+      <th>Lead Source</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
 
-
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </div>
@@ -1066,7 +1063,7 @@ right: -100%;
       <div id="timelineContainer">
         <!-- Timeline items will be added here dynamically -->
       </div>
-    </div>
+    </div> 
   </div>
 </div>
 <div class="modal fade" id="addLeadModal" tabindex="-1" aria-labelledby="addLeadModalLabel" aria-hidden="true">
@@ -1189,6 +1186,37 @@ right: -100%;
 <!-- Initialize image modal -->
 
 <script>
+  // Add this JavaScript to your page
+document.addEventListener('DOMContentLoaded', function() {
+    const addLinkBtn = document.getElementById('addLinkBtn');
+    const linksContainer = document.getElementById('linksContainer');
+    
+    addLinkBtn.addEventListener('click', function() {
+        // Create new link input row
+        const linkRow = document.createElement('div');
+        linkRow.className = 'row mb-2';
+        linkRow.innerHTML = `
+            <div class="col-md-5">
+                <input type="text" class="form-control form-control-sm" placeholder="Link title">
+            </div>
+            <div class="col-md-5">
+                <input type="url" class="form-control form-control-sm" placeholder="https://example.com">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-danger btn-sm remove-link">Remove</button>
+            </div>
+        `;
+        
+        // Add remove functionality
+        const removeBtn = linkRow.querySelector('.remove-link');
+        removeBtn.addEventListener('click', function() {
+            linkRow.remove();
+        });
+        
+        // Add to container
+        linksContainer.appendChild(linkRow);
+    });
+});
 document.addEventListener("DOMContentLoaded", function () {
   const saveBtn = document.getElementById('saveDetailsBtn');
   if (!saveBtn) {
@@ -1218,7 +1246,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("Submitting:", data);
 
-    fetch("http://localhost:81/form3_new/save_lead.php", {
+    fetch("http://localhost:80/form3/save_lead.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -1236,12 +1264,597 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+const tableBody = document.getElementById('tableBody');
+const leadForm = document.getElementById('leadForm');
+let currentSort = 'newest';
 
+function getStatusClass(status) {
+  switch (status) {
+    case "New": return "bg-info";
+    case "Contacted": return "bg-warning";
+    case "Qualified": return "bg-success";
+    default: return "bg-secondary";
+  }
+}
+
+function fetchLeads() {
+  fetch("get_leads.php")
+    .then(res => res.json())
+    .then(data => {
+      tableBody.innerHTML = "";
+      data.forEach(lead => addLeadToTable(lead));
+    })
+    .catch(err => {
+      console.error("Error loading leads:", err);
+    });
+}
+
+ 
+const leadsMap = {}; // Global object to store all leads by email
+
+function addLeadToTable(lead) {
+  const createdDate = new Date(lead.created_at);
+  const statusClass = getStatusClass(lead.status);
+  const row = document.createElement('tr');
+
+  // Store lead for access in openSlider()
+  leadsMap[lead.email] = lead;
+
+  row.setAttribute('data-status', lead.status);
+  row.setAttribute('data-created', createdDate.getTime());
+
+  row.innerHTML = `
+    <td>${createdDate.toLocaleString()}</td>
+    <td>
+      <a href="#" class="lead-name-link" data-email="${lead.email}" 
+         style="color: #25d366; text-decoration: none; font-weight: 500;">
+         ${lead.name}
+      </a>
+    </td>
+    <td>${lead.email}</td>
+    <td>${lead.phone}</td>
+    <td>${lead.location}</td>
+    <td>${lead.lead_source}</td>
+    <td><span class="badge ${statusClass} status-badge">${lead.status}</span></td>
+    <td>
+      <i class="bi bi-whatsapp whatsapp-icon"></i>
+      <i class="bi bi-chat-left-text chat-icon"></i>
+    </td>
+  `;
+
+  tableBody.appendChild(row);
+
+  // WhatsApp icon click
+  row.querySelector('.whatsapp-icon').addEventListener('click', function () {
+    openWhatsApp(lead.phone);
+  });
+
+  // Chat icon click
+  row.querySelector('.chat-icon').addEventListener('click', function (e) {
+    e.preventDefault();
+    openSlider(lead.email);
+  });
+
+  // Lead name click
+  row.querySelector('.lead-name-link').addEventListener('click', function (e) {
+    e.preventDefault();
+    openSlider(lead.email);
+  });
+}
+
+
+
+// Hook up your lead getter
+function getLeadsData() {
+  return leadsMap;
+}
+
+
+function renderLeadsTable(leadsData) {
+  tableBody.innerHTML = '';
+  const leadsArray = Object.values(leadsData);
+
+  leadsArray.sort((a, b) => {
+    const dateA = new Date(a.created_at || 0);
+    const dateB = new Date(b.created_at || 0);
+    return currentSort === 'newest' ? dateB - dateA : dateA - dateB;
+  });
+
+  leadsArray.forEach(lead => addLeadToTable(lead));
+  if (typeof statusFilter !== 'undefined' && statusFilter.value !== 'all') filterByStatus();
+  if (typeof searchInput !== 'undefined' && searchInput.value.trim() !== '') searchLeads();
+}
+
+function handleDateFilterChange(value) {
+  currentSort = value;
+  const rows = Array.from(tableBody.querySelectorAll('tr'));
+  const visibleRows = rows.filter(row => {
+    const matchesStatus = typeof statusFilter === 'undefined' || statusFilter.value === 'all' || row.getAttribute('data-status') === statusFilter.value;
+    const searchTerm = typeof searchInput !== 'undefined' ? searchInput.value.toLowerCase() : '';
+    const matchesSearch = searchTerm === '' || row.textContent.toLowerCase().includes(searchTerm);
+    return matchesStatus && matchesSearch;
+  });
+
+  visibleRows.sort((a, b) => {
+    const timeA = parseInt(a.getAttribute('data-created')) || 0;
+    const timeB = parseInt(b.getAttribute('data-created')) || 0;
+    return currentSort === 'newest' ? timeB - timeA : timeA - timeB;
+  });
+
+  rows.forEach(row => row.style.display = 'none');
+  visibleRows.forEach(row => {
+    row.style.display = '';
+    tableBody.appendChild(row);
+  });
+}
+
+function openSlider(leadEmail) {
+  currentLead = leadEmail;
+  const lead = getLeadsData()[leadEmail];
+
+  if (lead) {
+    document.getElementById('leadName').textContent = lead.name;
+    document.getElementById('leadEmail').textContent = lead.email;
+    document.getElementById('leadPhone').textContent = lead.phone;
+    document.getElementById('leadAltPhoneInput').value = lead.altPhone || '';
+    document.getElementById('leadBusinessInput').value = lead.business || '';
+    document.getElementById('leadStatusSelect').value = lead.status;
+    document.getElementById('leadLocationInput').value = lead.location;
+
+    loadFormState(leadEmail);
+    loadGallery(leadEmail);
+
+    const linksContainer = document.getElementById('linksContainer');
+    linksContainer.innerHTML = '';
+    if (lead.links && Array.isArray(lead.links)) {
+      lead.links.forEach(link => {
+        linksContainer.appendChild(createLinkElement(link.title, link.url));
+      });
+    }
+
+    renderTimeline(lead.notes);
+    setupAddLinkHandler();
+  }
+
+  slider.classList.add('open');
+  backdrop.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+
+function closeSlider() {
+  slider.classList.remove('open');
+  backdrop.classList.remove('show');
+  document.body.style.overflow = '';
+  currentLead = null;
+}
+// Initialize lead slider functionality
+function initLeadSlider() {
+  const leadLinks = document.querySelectorAll('.lead-name-link');
+  
+  if (!leadLinks.length) {
+    console.warn('No lead name links found - slider functionality disabled');
+    return;
+  }
+
+  leadLinks.forEach(link => {
+    link.addEventListener('click', handleLeadLinkClick);
+  });
+
+  // Add close button event listener
+  const closeBtn = document.querySelector('.lead-slider .close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeLeadSlider);
+  }
+}
+
+// Handle lead link click
+function handleLeadLinkClick(e) {
+  e.preventDefault();
+  
+  try {
+    const leadId = this.getAttribute('data-id');
+    const lead = findLeadById(leadId);
+
+    if (!lead) {
+      showAlert('Lead not found!', 'error');
+      return;
+    }
+
+    populateLeadForm(lead);
+    openLeadSlider();
+    loadAdditionalLeadData(leadId);
+    
+  } catch (error) {
+    console.error('Error handling lead click:', error);
+    showAlert('Failed to load lead details', 'error');
+  }
+}
+
+// Find lead by ID
+function findLeadById(leadId) {
+  if (!window.leadList || !Array.isArray(window.leadList)) {
+    console.error('leadList not found or invalid');
+    return null;
+  }
+  return window.leadList.find(l => l.id == leadId);
+}
+
+// Populate lead form with data
+function populateLeadForm(lead) {
+  const fieldMappings = {
+    textContent: {
+      'leadName': lead.name,
+      'leadEmail': lead.email,
+      'leadPhone': lead.phone
+    },
+    value: {
+      'leadIdInput': lead.id,
+      'leadAltPhoneInput': lead.alt_phone || '',
+      'leadBusinessInput': lead.business_details || '',
+      'leadStatusSelect': lead.stage || 'New lead',
+      'phoneStatusSelect': lead.phone_status || '',
+      'leadLocationInput': lead.location || '',
+      'loanRequiredSelect': lead.loan_required || 'No',
+      'loanAmountInput': lead.loan_amount || '',
+      'noteInput': lead.note || ''
+    }
+  };
+
+  // Set text content fields
+  Object.entries(fieldMappings.textContent).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
+
+  // Set value fields
+  Object.entries(fieldMappings.value).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.value = value;
+  });
+
+  // Toggle loan amount visibility
+  toggleLoanAmountVisibility(lead.loan_required === 'Yes');
+}
+
+// Toggle loan amount field visibility
+function toggleLoanAmountVisibility(show) {
+  const loanAmountContainer = document.getElementById('loanAmountContainer');
+  if (loanAmountContainer) {
+    loanAmountContainer.style.display = show ? 'block' : 'none';
+  }
+}
+
+// Open lead slider
+function openLeadSlider() {
+  const slider = document.querySelector('.lead-slider');
+  if (slider) {
+    slider.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// Close lead slider
+function closeLeadSlider() {
+  const slider = document.querySelector('.lead-slider');
+  if (slider) {
+    slider.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// Load additional lead data (AJAX example)
+function loadAdditionalLeadData(leadId) {
+  // Example: Load notes
+  fetch(`/api/leads/${leadId}/notes`)
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to load notes');
+      return response.json();
+    })
+    .then(notes => {
+      renderNotes(notes);
+    })
+    .catch(error => {
+      console.error('Error loading notes:', error);
+    });
+}
+
+// Render notes in timeline
+function renderNotes(notes) {
+  const container = document.getElementById('notesContainer');
+  if (!container) return;
+
+  container.innerHTML = notes.map(note => `
+    <div class="note-item">
+      <div class="note-date">${formatDate(note.created_at)}</div>
+      <div class="note-content">${note.content}</div>
+    </div>
+  `).join('');
+}
+
+// Format date for display
+function formatDate(dateString) {
+  const options = { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit', 
+    minute: '2-digit' 
+  };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Show alert message
+function showAlert(message, type = 'info') {
+  // Replace with your preferred alert system
+  const alertBox = document.createElement('div');
+  alertBox.className = `alert alert-${type}`;
+  alertBox.textContent = message;
+  document.body.appendChild(alertBox);
+  
+  setTimeout(() => {
+    alertBox.remove();
+  }, 3000);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initLeadSlider);
+
+leadForm?.addEventListener('submit', function (e) {
+  e.preventDefault();
+  handleLeadFormSubmit();
+  setupAddLinkHandler();
+});
+
+fetchLeads();
+</script>-->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize elements
+  const saveBtn = document.getElementById('saveDetailsBtn');
+  const tableBody = document.getElementById('tableBody');
+  const leadForm = document.getElementById('leadForm');
+  const slider = document.querySelector('.lead-slider');
+  const backdrop = document.querySelector('.lead-slider-backdrop');
+  const closeBtn = document.querySelector('.lead-slider-close');
+  
+  let currentSort = 'newest';
+  let currentLead = null;
+  const leadsMap = {}; // Global object to store all leads by email
+
+  // Status class mapping
+  function getStatusClass(status) {
+    switch (status) {
+      case "New": return "bg-info";
+      case "Contacted": return "bg-warning";
+      case "Qualified": return "bg-success";
+      default: return "bg-secondary";
+    }
+  }
+
+  // Fetch leads from server
+  function fetchLeads() {
+    fetch("get_leads.php")
+      .then(res => res.json())
+      .then(data => {
+        tableBody.innerHTML = "";
+        data.forEach(lead => {
+          leadsMap[lead.email] = lead;
+          addLeadToTable(lead);
+        });
+      })
+      .catch(err => {
+        console.error("Error loading leads:", err);
+      });
+  }
+
+  // Add lead to table with click handler
+  function addLeadToTable(lead) {
+    const createdDate = new Date(lead.created_at);
+    const statusClass = getStatusClass(lead.status);
+    const row = document.createElement('tr');
+
+    row.setAttribute('data-status', lead.status);
+    row.setAttribute('data-created', createdDate.getTime());
+
+    row.innerHTML = `
+      <td>${createdDate.toLocaleString()}</td>
+      <td>
+        <a href="#" class="lead-name-link" data-email="${lead.email}" 
+           style="color: #25d366; text-decoration: none; font-weight: 500;">
+           ${lead.name}
+        </a>
+      </td>
+      <td>${lead.email}</td>
+      <td>${lead.phone}</td>
+      <td>${lead.location}</td>
+      <td>${lead.lead_source}</td>
+      <td><span class="badge ${statusClass} status-badge">${lead.status}</span></td>
+      <td>
+        <i class="bi bi-whatsapp whatsapp-icon"></i>
+        <i class="bi bi-chat-left-text chat-icon"></i>
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+
+    // Add event listeners
+    row.querySelector('.whatsapp-icon').addEventListener('click', function() {
+      openWhatsApp(lead.phone);
+    });
+    
+    row.querySelector('.chat-icon').addEventListener('click', function(e) {
+      e.preventDefault();
+      openLeadSlider(lead.email);
+    });
+    
+    // This is the key part for name link click
+    row.querySelector('.lead-name-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      openLeadDetails(lead.email);
+    });
+  }
+
+  // Open lead details when name is clicked
+  function openLeadDetails(leadEmail) {
+    currentLead = leadEmail;
+    const lead = getLeadsData()[leadEmail];
+
+    if (lead) {
+      // Populate form fields
+      document.getElementById('leadName').textContent = lead.name;
+      document.getElementById('leadEmail').textContent = lead.email;
+      document.getElementById('leadPhone').textContent = lead.phone;
+      document.getElementById('leadAltPhoneInput').value = lead.alt_phone || '';
+      document.getElementById('leadBusinessInput').value = lead.business_details || '';
+      document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
+      document.getElementById('phoneStatusSelect').value = lead.phone_status || '';
+      document.getElementById('leadLocationInput').value = lead.location || '';
+      document.getElementById('loanRequiredSelect').value = lead.loan_required || 'No';
+      document.getElementById('loanAmountInput').value = lead.loan_amount || '';
+      document.getElementById('noteInput').value = lead.note || '';
+
+      // Toggle loan amount visibility
+      toggleLoanAmountVisibility(lead.loan_required === 'Yes');
+      
+      // Open the slider
+      openLeadSlider();
+      const linksContainer = document.getElementById('linksContainer');
+              linksContainer.innerHTML = '';
+              if (lead.links && Array.isArray(lead.links)) {
+                  lead.links.forEach(link => {
+                      linksContainer.appendChild(createLinkElement(link.title, link.url));
+                  });
+              }
+              
+              // Render timeline
+              renderTimeline(lead.notes);
+              setupAddLinkHandler(); 
+    }
+  }
+
+  // Open slider
+  function openLeadSlider() {
+    slider.classList.add('open');
+    backdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close slider
+  function closeLeadSlider() {
+    slider.classList.remove('open');
+    backdrop.classList.remove('show');
+    document.body.style.overflow = '';
+    currentLead = null;
+  }
+  function createLinkElement(title = '', url = '') {
+  const div = document.createElement('div');
+  div.classList.add('link-item', 'mb-2'); // Add margin-bottom spacing
+  div.innerHTML = `
+    <input type="text" class="form-control mb-1 link-title-input" placeholder="Link Title" value="${title}">
+    <input type="url" class="form-control link-url-input" placeholder="Link URL" value="${url}">
+  `;
+  return div;
+}
+
+
+  // Toggle loan amount visibility
+  function toggleLoanAmountVisibility(show) {
+    const loanAmountContainer = document.getElementById('loanAmountContainer');
+    if (loanAmountContainer) {
+      loanAmountContainer.style.display = show ? 'block' : 'none';
+    }
+  }
+
+  // Get leads data
+  function getLeadsData() {
+    return leadsMap;
+  }
+
+  // Open WhatsApp
+  function openWhatsApp(phoneNumber) {
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    if (/^[6-9]\d{9}$/.test(cleaned)) {
+      window.open(`https://wa.me/+91${cleaned}`, '_blank');
+    } else {
+      alert('Please provide a valid 10-digit Indian mobile number');
+    }
+  }
+  
+ function setupAddLinkHandler() {
+  const addLinkBtn = document.getElementById('addLinkBtn');
+
+  if (addLinkBtn) {
+    // Remove old listeners by replacing the button with a clone
+    const newBtn = addLinkBtn.cloneNode(true);
+    addLinkBtn.parentNode.replaceChild(newBtn, addLinkBtn);
+
+    newBtn.addEventListener('click', function () {
+      const linksContainer = document.getElementById('linksContainer');
+      if (linksContainer) {
+        // Add new link input row
+        linksContainer.appendChild(createLinkElement());
+      }
+    });
+  }
+
+  }
+
+
+  // Save lead details (your existing save functionality)
+  saveBtn.addEventListener('click', function() {
+    if (!currentLead) return;
+    
+    const data = {
+      name: document.getElementById('leadName').innerText.trim(),
+      email: document.getElementById('leadEmail').innerText.trim(),
+      phone: document.getElementById('leadPhone').innerText.trim(),
+      alt_phone: document.getElementById('leadAltPhoneInput').value,
+      business_details: document.getElementById('leadBusinessInput').value,
+      stage: document.getElementById('leadStatusSelect').value,
+      phone_status: document.getElementById('phoneStatusSelect').value,
+      location: document.getElementById('leadLocationInput').value,
+      loan_required: document.getElementById('loanRequiredSelect').value,
+      loan_amount: document.getElementById('loanAmountInput').value,
+      note: document.getElementById('noteInput').value,
+      status: document.getElementById('leadStatusSelect').value || "New"
+    };
+
+    fetch("http://localhost:80/form3/save_lead.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(res => {
+      alert(res);
+      console.log(res);
+    })
+    .catch(err => {
+      console.error("❌ Fetch error:", err);
+      alert("Error saving data");
+    });
+  });
+
+  // Close button event
+  closeBtn.addEventListener('click', closeLeadSlider);
+  
+  // Backdrop click event
+  backdrop.addEventListener('click', closeLeadSlider);
+
+  // Initialize
+  fetchLeads();
+});
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-<script>
+
+
+ <!-- <script>
   document.addEventListener('DOMContentLoaded', function() {
       // Initialize variables
       const slider = document.querySelector('.lead-slider');
@@ -1461,7 +2074,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.body.style.overflow = '';
           currentLead = null;
       }
-      
+    
       function renderTimeline(notes) {
           const container = document.getElementById('timelineContainer');
           container.innerHTML = '';
@@ -1480,7 +2093,8 @@ document.addEventListener("DOMContentLoaded", function () {
               timelineItem.className = 'timeline-item';
               timelineItem.innerHTML = `
                   <div class="timeline-dot"></div>
-                  <div class="timeline-date">${formattedDate}</div>
+     });
+      }              <div class="timeline-date">${formattedDate}</div>
                   <div class="timeline-content">
                       ${note.text || 'Details updated'}
                       ${note.statusChange ? `<div class="mt-2"><strong>Status changed to:</strong> ${note.statusChange}</div>` : ''}
@@ -1490,8 +2104,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   </div>
               `;
               container.appendChild(timelineItem);
-          });
-      }
+         
       
       // Load lead-specific form state
       function loadFormState(email) {
@@ -2108,7 +2721,7 @@ window.deleteCurrentImage = function () {
   document.querySelector('.modal .btn-close')?.click();
 };
   });
-</script>
+</script> -->
 
 <script>
 // filepath: c:\Users\ADMIN\Downloads\franchisebhoomiDashboard-main\franchisebhoomiDashboard-main\leads.html
@@ -2242,43 +2855,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Make sure leadList is already available in the global scope
   // leadList = [{ id: 1, name: "John", email: "...", phone: "...", etc. }, ...]
 
-  document.querySelectorAll('.lead-name-link').forEach(link => {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-
-      const leadId = this.getAttribute('data-id');
-      const lead = leadList.find(l => l.id == leadId);
-
-      if (!lead) {
-        alert('Lead not found!');
-        return;
-      }
-
-      // Fill the lead slider fields
-      document.getElementById('leadIdInput').value = lead.id;
-      document.getElementById('leadName').textContent = lead.name;
-      document.getElementById('leadEmail').textContent = lead.email;
-      document.getElementById('leadPhone').textContent = lead.phone;
-      document.getElementById('leadAltPhoneInput').value = lead.alt_phone || '';
-      document.getElementById('leadBusinessInput').value = lead.business_details || '';
-      document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
-      document.getElementById('phoneStatusSelect').value = lead.phone_status || '';
-      document.getElementById('leadLocationInput').value = lead.location || '';
-      document.getElementById('loanRequiredSelect').value = lead.loan_required || 'No';
-      document.getElementById('loanAmountInput').value = lead.loan_amount || '';
-      document.getElementById('noteInput').value = lead.note || '';
-
-      // Show the slider (or slide it in with a class)
-      document.querySelector('.lead-slider').classList.add('open');
-    });
-  });
-
-  // Optional: Close button functionality
+ // Optional: Close button functionality
   document.querySelector('.lead-slider-close').addEventListener('click', () => {
     document.querySelector('.lead-slider').classList.remove('open');
   });
 });
-</script>
+</script> 
 
 
 </body>

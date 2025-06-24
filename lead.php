@@ -2,45 +2,59 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// 1. Database config
+// Database config
 $host = "127.0.0.1";
 $port = 3306;
 $username = "root";
 $password = "";
 $database = "leads";
 
-// 2. Connect to MySQL
+// Connect
 $conn = new mysqli($host, $username, $password, $database, $port);
-
-// 3. Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// 4. Handle form submission
+// Only accept POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize and get inputs
-    $name        = $_POST['name'] ?? '';
-    $email       = $_POST['email'] ?? '';
-    $phone       = $_POST['phone'] ?? '';
-    $location    = $_POST['location'] ?? '';
-    $stage       = $_POST['stage'] ?? '';
-    $lead_source = $_POST['lead_source'] ?? '';
+    // Get all fields
+    $id           = $_POST['id'] ?? null;
+    $name         = $_POST['name'] ?? '';
+    $email        = $_POST['email'] ?? '';
+    $phone        = $_POST['phone'] ?? '';
+    $altPhone     = $_POST['altPhone'] ?? '';
+    $business     = $_POST['business'] ?? '';
+    $status       = $_POST['status'] ?? '';
+    $phone_status = $_POST['phone_status'] ?? '';
+    $location     = $_POST['location'] ?? '';
+    $loan_required = $_POST['loan_required'] ?? '';
+    $loan_amount  = $_POST['loan_amount'] ?? '';
+    $lead_source  = $_POST['lead_source'] ?? '';
+    $stage        = $_POST['stage'] ?? '';
+    $links        = isset($_POST['links']) ? json_encode($_POST['links']) : '[]';
 
-    // Basic validation
-    if (!$name || !$email || !$phone || !$location || !$stage || !$lead_source) {
-        echo "<script>alert('All fields are required.'); window.history.back();</script>";
-        exit();
+    if (!$id) {
+        echo "Error: Missing lead ID.";
+        exit;
     }
 
-    // Insert query
-    $stmt = $conn->prepare("INSERT INTO client_leads (name, email, phone, location, stage, lead_source) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssss", $name, $email, $phone, $location, $stage, $lead_source);
+    // Update existing lead by ID
+    $sql = "UPDATE client_leads SET 
+        name = ?, email = ?, phone = ?, alt_phone = ?, business = ?, 
+        status = ?, phone_status = ?, location = ?, loan_required = ?, 
+        loan_amount = ?, lead_source = ?, stage = ?, links = ? 
+        WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssssssssss", 
+        $name, $email, $phone, $altPhone, $business, 
+        $status, $phone_status, $location, $loan_required, 
+        $loan_amount, $lead_source, $stage, $links, $id);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Lead added successfully!'); window.location.href='leads.html';</script>";
+        echo "Lead updated successfully!";
     } else {
-        echo "Error inserting lead: " . $stmt->error;
+        echo "Update failed: " . $stmt->error;
     }
 
     $stmt->close();
