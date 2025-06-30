@@ -189,7 +189,12 @@
          transition: all 0.3s;
          background-color: #f8f9fa;
        }
-       
+       .bg-new-lead { background-color: #0d6efd; color: white; }
+.bg-contacted { background-color: #ffc107; color: black; }
+.bg-qualified { background-color: #20c997; color: white; }
+.bg-lead-won { background-color: #198754; color: white; }
+.bg-not-reachable { background-color: #6c757d; color: white; }
+.bg-lead-lost { background-color: #dc3545; color: white; }
        .status-filter:focus {
          outline: none;
          box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
@@ -965,14 +970,17 @@ right: -100%;
           <!-- Status -->
           <div class="lead-info-item">
             <label class="lead-info-label">Stage</label>
-            <select class="lead-status-selector" id="leadStatusSelect">
-              <option value="New lead">New lead</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Qualified">Qualified</option>
-              <option value="Lead won">Lead won</option>
-              <option value="Not reachable">Not reachable</option>
-              <option value="Lead lost">Lead lost</option>
-            </select>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <select class="lead-status-selector" id="leadStatusSelect">
+                <option value="New lead">New lead</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Qualified">Qualified</option>
+                <option value="Lead won">Lead won</option>
+                <option value="Not reachable">Not reachable</option>
+                <option value="Lead lost">Lead lost</option>
+              </select>
+              <span id="stageBadgeSlider" class="badge badge-stage bg-new-lead">New lead</span>
+            </div>
           </div>
           <div class="lead-info-item">
             <label class="lead-info-label">Phone Status</label>
@@ -1104,11 +1112,14 @@ right: -100%;
           </div>
           <div class="mb-3">
             <label for="stage" class="form-label">Stage</label>
-            <select class="form-control" id="stage" name="stage" required>
-              <option value="New lead" selected>New lead</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Qualified">Qualified</option>
-            </select>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <select class="form-control" id="stage" name="stage" required>
+                <option value="New lead" selected>New lead</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Qualified">Qualified</option>
+              </select>
+              <span id="stageBadgeModal" class="badge badge-stage bg-new-lead">New lead</span>
+            </div>
           </div>
           <div class="mb-3">
             <label for="lead_source" class="form-label">Lead Source</label>
@@ -1267,12 +1278,15 @@ document.addEventListener("DOMContentLoaded", function () {
       status: document.getElementById('leadStatusSelect').value
     };
 
-    console.log("Submitting:", data);
+    // Use FormData instead of JSON
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
 
     fetch("http://localhost:80/form3/save_lead.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      body: formData
     })
       .then(res => res.text())
       .then(res => {
@@ -1320,13 +1334,14 @@ const leadsMap = {}; // Global object to store all leads by email
 
 function addLeadToTable(lead) {
   const createdDate = new Date(lead.created_at);
-  const statusClass = getStatusClass(lead.status);
+  const statusValue = lead.status && lead.status.toLowerCase() !== 'no status' ? lead.status : 'New lead';
+  const statusClass = getStatusClass(statusValue);
   const row = document.createElement('tr');
 
   // Store lead for access in openSlider()
   leadsMap[lead.email] = lead;
 
-  row.setAttribute('data-status', lead.status);
+  row.setAttribute('data-status', statusValue);
   row.setAttribute('data-created', createdDate.getTime());
 
   row.innerHTML = `
@@ -1341,7 +1356,7 @@ function addLeadToTable(lead) {
     <td>${lead.phone}</td>
     <td>${lead.location}</td>
     <td>${lead.lead_source}</td>
-    <td><span class="badge ${statusClass} status-badge">${lead.status}</span></td>
+    <td><span class="badge ${statusClass} status-badge">${statusValue}</span></td>
     <td>
       <i class="bi bi-whatsapp whatsapp-icon"></i>
       <i class="bi bi-chat-left-text chat-icon"></i>
@@ -1364,7 +1379,7 @@ function addLeadToTable(lead) {
   // Lead name click
   row.querySelector('.lead-name-link').addEventListener('click', function (e) {
     e.preventDefault();
-    openSlider(lead.email);
+    openLeadDetails(lead.email);
   });
 }
 
@@ -1424,7 +1439,9 @@ function openSlider(leadEmail) {
     document.getElementById('leadPhone').textContent = lead.phone;
     document.getElementById('leadAltPhoneInput').value = lead.altPhone || '';
     document.getElementById('leadBusinessInput').value = lead.business || '';
-    document.getElementById('leadStatusSelect').value = lead.status;
+    document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
+    stageBadgeSlider.textContent = lead.stage || 'New lead';
+    stageBadgeSlider.className = `badge badge-stage ${getBadgeClass(lead.stage || 'New lead')}`;
     document.getElementById('leadLocationInput').value = lead.location;
 
     loadFormState(leadEmail);
@@ -1871,14 +1888,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const leadsMap = {}; // Global object to store all leads by email
 
   // Status class mapping
-  function getStatusClass(status) {
-    switch (status) {
-      case "New": return "bg-info";
-      case "Contacted": return "bg-warning";
-      case "Qualified": return "bg-success";
-      default: return "bg-secondary";
-    }
+ function getStatusClass(status) {
+  if (!status) return 'bg-secondary';
+  switch (status.toLowerCase()) {
+    case 'new lead': return 'bg-new-lead';
+    case 'contacted': return 'bg-contacted';
+    case 'qualified': return 'bg-qualified';
+    case 'lead won': return 'bg-lead-won';
+    case 'not reachable': return 'bg-not-reachable';
+    case 'lead lost': return 'bg-lead-lost';
+    default: return 'bg-secondary';
   }
+}
 
   // Fetch leads from server
   function fetchLeads() {
@@ -1899,10 +1920,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Add lead to table with click handler
   function addLeadToTable(lead) {
     const createdDate = new Date(lead.created_at);
-    const statusClass = getStatusClass(lead.status);
+    // Use the actual status, fallback to 'New lead' only if missing or empty
+    let statusValue = lead.status;
+    if (!statusValue || statusValue.toLowerCase() === 'no status') statusValue = lead.stage || 'New lead';
+    const statusClass = getStatusClass(statusValue);
     const row = document.createElement('tr');
 
-    row.setAttribute('data-status', lead.status);
+    row.setAttribute('data-status', statusValue);
     row.setAttribute('data-created', createdDate.getTime());
 
     row.innerHTML = `
@@ -1917,7 +1941,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <td>${lead.phone}</td>
       <td>${lead.location}</td>
       <td>${lead.lead_source}</td>
-      <td><span class="badge ${statusClass} status-badge">${lead.status}</span></td>
+      <td><span class="badge ${statusClass} status-badge">${statusValue}</span></td>
       <td>
         <i class="bi bi-whatsapp whatsapp-icon"></i>
         <i class="bi bi-chat-left-text chat-icon"></i>
@@ -1955,7 +1979,11 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('leadPhone').textContent = lead.phone;
       document.getElementById('leadAltPhoneInput').value = lead.alt_phone || '';
       document.getElementById('leadBusinessInput').value = lead.business_details || '';
-      document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
+      let statusValue = lead.stage || lead.status || 'New lead';
+      if (!statusValue || statusValue.toLowerCase() === 'no status') statusValue = 'New lead';
+      document.getElementById('leadStatusSelect').value = statusValue;
+      stageBadgeSlider.textContent = statusValue;
+      stageBadgeSlider.className = `badge badge-stage ${getBadgeClass(statusValue)}`;
       document.getElementById('phoneStatusSelect').value = lead.phone_status || '';
       document.getElementById('leadLocationInput').value = lead.location || '';
       document.getElementById('loanRequiredSelect').value = lead.loan_required || 'No';
@@ -1968,16 +1996,16 @@ document.addEventListener("DOMContentLoaded", function () {
       // Open the slider
       openLeadSlider();
       const linksContainer = document.getElementById('linksContainer');
-              linksContainer.innerHTML = '';
-              if (lead.links && Array.isArray(lead.links)) {
-                  lead.links.forEach(link => {
-                      linksContainer.appendChild(createLinkElement(link.title, link.url));
-                  });
-              }
-              
-              // Render timeline
-              renderTimeline(lead.notes);
-              setupAddLinkHandler(); 
+      linksContainer.innerHTML = '';
+      if (lead.links && Array.isArray(lead.links)) {
+        lead.links.forEach(link => {
+          linksContainer.appendChild(createLinkElement(link.title, link.url));
+        });
+      }
+      
+      // Render timeline
+      renderTimeline(lead.notes);
+      setupAddLinkHandler(); 
     }
   }
 
@@ -2041,71 +2069,74 @@ function saveLeadDetails() {
   saveBtn.disabled = true;
   saveBtn.innerHTML = 'Saving...';
 
- fetch('save_lead.php', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data)
-})
-  .then(response => {
-    if (!response.ok) throw new Error('Network response was not ok');
-    return response.json();
+  const formData = new FormData();
+  for (const key in data) {
+    formData.append(key, data[key]);
+  }
+  fetch("http://localhost:80/form3/save_lead.php", {
+    method: "POST",
+    body: formData
   })
-  .then(res => {
-    if (res.success) {
-      showAlert('✅ Lead saved successfully!', 'success');
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(res => {
+      if (res.success) {
+        showAlert('✅ Lead saved successfully!', 'success');
 
-      // ✅ Now check and upload image if selected
-      const fileInput = document.getElementById('leadImageUpload');
-      if (fileInput && fileInput.files.length > 0) {
-        const formData = new FormData();
-        formData.append('lead_id', res.lead_id); // Returned from save_lead.php
-        formData.append('image', fileInput.files[0]);
+        // ✅ Now check and upload image if selected
+        const fileInput = document.getElementById('leadImageUpload');
+        if (fileInput && fileInput.files.length > 0) {
+          const formData = new FormData();
+          formData.append('lead_id', res.lead_id); // Returned from save_lead.php
+          formData.append('image', fileInput.files[0]);
 
-        fetch('save_lead_image.php', {
-          method: 'POST',
-          body: formData
-        })
-          .then(r => r.json())
-          .then(imgRes => {
-            if (imgRes.success) {
-              showAlert('✅ Image uploaded successfully!', 'success');
-              console.log('Image saved to:', imgRes.image_url);
-            } else {
-              showAlert('❌ ' + imgRes.message, 'error');
-              console.error('❌ Image error:', imgRes.message);
-            }
+          fetch('save_lead_image.php', {
+            method: 'POST',
+            body: formData
           })
-          .catch(err => {
-            console.error('❌ Image upload error:', err);
-            showAlert('❌ Image upload failed', 'error');
-          });
-      }
+            .then(r => r.json())
+            .then(imgRes => {
+              if (imgRes.success) {
+                showAlert('✅ Image uploaded successfully!', 'success');
+                console.log('Image saved to:', imgRes.image_url);
+              } else {
+                showAlert('❌ ' + imgRes.message, 'error');
+                console.error('❌ Image error:', imgRes.message);
+              }
+            })
+            .catch(err => {
+              console.error('❌ Image upload error:', err);
+              showAlert('❌ Image upload failed', 'error');
+            });
+        }
 
-      // ✅ Update local lead data
-      leadsMap[currentLead] = {
-        ...leadsMap[currentLead],
-        ...data,
-        note: data.note,
-        status: data.status,
-        location: data.location,
-        alt_phone: data.alt_phone,
-        business_details: data.business_details,
-        phone_status: data.phone_status,
-        loan_required: data.loan_required,
-        loan_amount: data.loan_amount
-      };
-    } else {
-      throw new Error(res.message || '❌ Failed to save lead');
-    }
-  })
-  .catch(error => {
-    console.error('❌ Lead save error:', error);
-    showAlert('❌ Error saving lead: ' + error.message, 'error');
-  })
-  .finally(() => {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = 'Save Details';
-  });
+        // ✅ Update local lead data
+        leadsMap[currentLead] = {
+          ...leadsMap[currentLead],
+          ...data,
+          note: data.note,
+          status: data.status,
+          location: data.location,
+          alt_phone: data.alt_phone,
+          business_details: data.business_details,
+          phone_status: data.phone_status,
+          loan_required: data.loan_required,
+          loan_amount: data.loan_amount
+        };
+      } else {
+        throw new Error(res.message || '❌ Failed to save lead');
+      }
+    })
+    .catch(error => {
+      console.error('❌ Lead save error:', error);
+      showAlert('❌ Error saving lead: ' + error.message, 'error');
+    })
+    .finally(() => {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = 'Save Details';
+    });
 
 }
 
@@ -2193,7 +2224,7 @@ function saveLeadDetails() {
               business: "",
               location,
               source,
-              status,
+              status: status || "New lead", // Always set a default if missing
               createdAt: dateTime,
               notes: [],
               formState: {
@@ -2223,7 +2254,7 @@ function saveLeadDetails() {
                   <td>${phone}</td>
                   <td>${location}</td>
                   <td>${source}</td>
-                  <td><span class="badge ${statusClass} status-badge">${status}</span></td>
+                  <td><span class="badge ${statusClass} status-badge">${newLead.status}</span></td>
                   <td>
                       <i class="bi bi-whatsapp whatsapp-icon"></i>
                       <i class="bi bi-chat-left-text chat-icon"></i>
@@ -2256,9 +2287,165 @@ function saveLeadDetails() {
           document.getElementById('leadForm').reset();
           bootstrap.Modal.getInstance(document.getElementById('addLeadModal')).hide();
       }
+       function saveFormState() {
+          if (!currentLead) return;
+          
+          const formState = {
+              phoneStatus: document.getElementById('phoneStatusSelect').value,
+              loanRequired: document.getElementById('loanRequiredSelect').value,
+              loanAmount: document.getElementById('loanAmountInput').value,
+              leadStage: document.getElementById('leadStatusSelect').value
+
+          };
+          
+          const leadsData = getLeadsData();
+          leadsData[currentLead].formState = formState;
+          saveLeadsDataToLocalStorage(leadsData);
+      }
+      
+      // Load lead-specific image gallery
+      function loadGallery(email) {
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const gallery = document.getElementById('imageGalleryContainer');
+          gallery.innerHTML = '';
+          
+          lead.images.forEach((img, index) => {
+              addImageToGallery(img, index, email);
+          });
+      }
+      
+      // Add image to gallery
+      function addImageToGallery(imageData, index, email) {
+          const gallery = document.getElementById('imageGalleryContainer');
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          div.innerHTML = `
+              <img src="${imageData.src}" alt="${imageData.name}" onclick="openImageModal(${index}, '${email}')">
+              <button class="delete-image" onclick="deleteImage(${index}, '${email}')">×</button>
+          `;
+          gallery.appendChild(div);
+      }
+      
+      // Handle image upload
+      function handleImageUpload(e) {
+          if (!currentLead) return;
+          
+          const files = Array.from(e.target.files);
+          const leadsData = getLeadsData();
+          const images = leadsData[currentLead].images || [];
+          const remainingSlots = 5 - images.length;
+          
+          if (files.length > remainingSlots) {
+              alert(`You can only upload ${remainingSlots} more image${remainingSlots !== 1 ? 's' : ''}`);
+              return;
+          }
+          
+          files.forEach(file => {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  const imageData = {
+                      src: e.target.result,
+                      name: file.name,
+                      timestamp: new Date().toISOString()
+                  };
+                  images.push(imageData);
+                  leadsData[currentLead].images = images;
+                  saveLeadsDataToLocalStorage(leadsData);
+                  addImageToGallery(imageData, images.length - 1, currentLead);
+                  
+              };
+              reader.readAsDataURL(file);
+          });
+      }
+      
+      // Open image modal
+      function openImageModal(index, email) {
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const modalImage = document.getElementById('modalImage');
+          modalImage.src = lead.images[index].src;
+          
+          // Store current image index and lead email for navigation
+          localStorage.setItem('currentImageIndex', index);
+          localStorage.setItem('currentImageLead', email);
+          
+          updateImageCounter();
+          updateNavigationButtons();
+          
+          // Show modal
+          const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+          imageModal.show();
+      }
+      
+      // Update image counter
+      function updateImageCounter() {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          document.getElementById('imageCounter').textContent = 
+              `Image ${currentIndex + 1} of ${lead.images.length}`;
+      }
+      
+      // Update navigation buttons
+      function updateNavigationButtons() {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const images = lead.images;
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          
+          document.getElementById('prevImage').style.display = 
+              currentIndex > 0 ? 'block' : 'none';
+          document.getElementById('nextImage').style.display = 
+              currentIndex < images.length - 1 ? 'block' : 'none';
+      }
+      
+      // Navigate images
+      function navigateImages(e) {
+          const email = localStorage.getItem('currentImageLead');
+          const lead = getLeadsData()[email];
+          if (!lead || !lead.images) return;
+          
+          const images = lead.images;
+          const currentIndex = parseInt(localStorage.getItem('currentImageIndex'));
+          const direction = e.target.id === 'prevImage' ? -1 : 1;
+          const newIndex = currentIndex + direction;
+          
+          if (newIndex >= 0 && newIndex < images.length) {
+              localStorage.setItem('currentImageIndex', newIndex);
+              document.getElementById('modalImage').src = images[newIndex].src;
+              updateImageCounter();
+              updateNavigationButtons();
+          }
+      }
+      
+      // Delete image
+      function deleteImage(index, email) {
+          const leadsData = getLeadsData();
+          leadsData[email].images.splice(index, 1);
+          saveLeadsDataToLocalStorage(leadsData);
+          loadGallery(email);
+      }
       
 
-
+ function updateStatusInTable(email, newStatus) {
+          const row = findLeadRowByEmail(email);
+          if (row) {
+              // Use the actual status, fallback to 'New lead' only if missing or empty
+              let statusValue = newStatus;
+              if (!statusValue || statusValue.toLowerCase() === 'no status') statusValue = 'New lead';
+              const badge = row.querySelector('td:nth-child(7) span');
+              badge.textContent = statusValue;
+              badge.className = 'badge status-badge ' + getStatusClass(statusValue);
+              row.setAttribute('data-status', statusValue);
+          }
+      }
   // Save lead details (your existing save functionality)
   
   // Close button event
@@ -2459,7 +2646,9 @@ function saveLeadDetails() {
               document.getElementById('leadPhone').textContent = lead.phone;
               document.getElementById('leadAltPhoneInput').value = lead.altPhone || '';
               document.getElementById('leadBusinessInput').value = lead.business || '';
-              document.getElementById('leadStatusSelect').value = lead.status;
+              document.getElementById('leadStatusSelect').value = lead.stage || 'New lead';
+              stageBadgeSlider.textContent = lead.stage || 'New lead';
+              stageBadgeSlider.className = `badge badge-stage ${getBadgeClass(lead.stage || 'New lead')}`;
               document.getElementById('leadLocationInput').value = lead.location;
               
               // Load lead-specific form state
@@ -2733,6 +2922,7 @@ function saveLeadDetails() {
               timestamp: new Date().toISOString()
           });
           
+          
           const lead = getLeadsData()[currentLead];
           renderTimeline(lead.notes);
       }
@@ -2856,10 +3046,13 @@ function saveLeadDetails() {
       function updateStatusInTable(email, newStatus) {
           const row = findLeadRowByEmail(email);
           if (row) {
+              // Use the actual status, fallback to 'New lead' only if missing or empty
+              let statusValue = newStatus;
+              if (!statusValue || statusValue.toLowerCase() === 'no status') statusValue = 'New lead';
               const badge = row.querySelector('td:nth-child(7) span');
-              badge.textContent = newStatus;
-              badge.className = 'badge status-badge ' + getStatusClass(newStatus);
-              row.setAttribute('data-status', newStatus);
+              badge.textContent = statusValue;
+              badge.className = 'badge status-badge ' + getStatusClass(statusValue);
+              row.setAttribute('data-status', statusValue);
           }
       }
       
@@ -2899,12 +3092,12 @@ function saveLeadDetails() {
       
       function getStatusClass(status) {
           switch (status.toLowerCase()) {
-              case 'new lead': return 'bg-primary';
-              case 'contacted': return 'bg-warning text-dark';
-              case 'qualified': return 'bg-info text-white';
-              case 'lead won': return 'bg-success';
-              case 'not reachable': return 'bg-dark';
-              case 'lead lost': return 'bg-danger';
+              case 'new lead': return 'bg-new-lead';
+              case 'contacted': return 'bg-contacted';
+              case 'qualified': return 'bg-qualified';
+              case 'lead won': return 'bg-lead-won';
+              case 'not reachable': return 'bg-not-reachable';
+              case 'lead lost': return 'bg-lead-lost';
               default: return 'bg-secondary';
           }
       }
@@ -2939,7 +3132,7 @@ function saveLeadDetails() {
               business: "",
               location,
               source,
-              status,
+              status: status || "New lead", // Always set a default if missing
               createdAt: dateTime,
               notes: [],
               formState: {
@@ -3271,7 +3464,9 @@ window.deleteCurrentImage = function () {
     localStorage.setItem('leadsData', JSON.stringify(leadsData));
   }
 })();
+
 </script>
+  
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -3286,6 +3481,76 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script> 
+<script>
+  const stageSelectModal = document.getElementById("stage");
+  const stageBadgeModal = document.getElementById("stageBadgeModal");
+
+  stageSelectModal.addEventListener("change", () => {
+    const val = stageSelectModal.value;
+    stageBadgeModal.textContent = val;
+    stageBadgeModal.className = `badge badge-stage ${getBadgeClass(val)}`;
+  });
+
+  function getBadgeClass(value) {
+    const lower = value.toLowerCase();
+    if (lower.includes("won")) return "bg-lead-won";
+    if (lower.includes("lost")) return "bg-lead-lost";
+    if (lower.includes("contacted") || lower.includes("connected")) return "bg-contacted";
+    if (lower.includes("qualified")) return "bg-qualified";
+    if (lower.includes("not reachable") || lower.includes("switch")) return "bg-not-reachable";
+    return "bg-new-lead";
+  }
+
+  // Utility to get badge class
+  function getBadgeClass(value) {
+    const lower = value.toLowerCase();
+    if (lower.includes("won")) return "bg-lead-won";
+    if (lower.includes("lost")) return "bg-lead-lost";
+    if (lower.includes("contacted") || lower.includes("connected")) return "bg-contacted";
+    if (lower.includes("qualified")) return "bg-qualified";
+    if (lower.includes("not reachable") || lower.includes("switch")) return "bg-not-reachable";
+    return "bg-new-lead";
+  }
+
+  // For Add New Lead Modal
+  if (stageSelectModal && stageBadgeModal) {
+    stageSelectModal.addEventListener("change", () => {
+      const val = stageSelectModal.value;
+      stageBadgeModal.textContent = val;
+      stageBadgeModal.className = `badge badge-stage ${getBadgeClass(val)}`;
+    });
+    // Set initial badge
+    stageBadgeModal.textContent = stageSelectModal.value;
+    stageBadgeModal.className = `badge badge-stage ${getBadgeClass(stageSelectModal.value)}`;
+  }
+
+  // For Lead Details Slider
+  const stageSelectSlider = document.getElementById("leadStatusSelect");
+  const stageBadgeSlider = document.getElementById("stageBadgeSlider");
+  if (stageSelectSlider && stageBadgeSlider) {
+    // Update badge on dropdown change
+    stageSelectSlider.addEventListener("change", () => {
+      let val = stageSelectSlider.value;
+      if (!val || val.toLowerCase() === 'no status') val = 'New lead';
+      stageBadgeSlider.textContent = val;
+      stageBadgeSlider.className = `badge badge-stage ${getBadgeClass(val)}`;
+    });
+    // Set initial badge
+    let initialVal = stageSelectSlider.value;
+    if (!initialVal || initialVal.toLowerCase() === 'no status') initialVal = 'New lead';
+    stageBadgeSlider.textContent = initialVal;
+    stageBadgeSlider.className = `badge badge-stage ${getBadgeClass(initialVal)}`;
+  }
+
+  let leads = JSON.parse(localStorage.getItem('leadsData'));
+  for (let email in leads) {
+    if (!leads[email].status) {
+      leads[email].status = "New lead"; // or any default you want
+    }
+  }
+  localStorage.setItem('leadsData', JSON.stringify(leads));
+</script>
+
 
 
 </body>
