@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="assets/icon/icofont/css/icofont.css">
     <!-- bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    
     <!-- css -->
     <style>
       .content-wrapper {
@@ -509,6 +510,19 @@ margin-right: 10px;
 .save-details-btn:hover {
 background-color: #2563eb;
 }
+.upload-progress {
+  font-size: 0.8em;
+  color: #6c757d; /* gray */
+}
+
+.upload-progress.text-danger {
+  color: #dc3545; /* red */
+}
+
+.gallery-item.uploading {
+  opacity: 0.8;
+  border-left: 3px solid #ffc107; /* yellow */
+}
 
 .add-note-btn {
 margin-top: 10px;
@@ -901,7 +915,7 @@ right: -100%;
       <th>Phone</th>
       <th>Location</th>
       <th>Lead Source</th>
-      <th>Status</th>
+      <th>Stage</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -913,163 +927,158 @@ right: -100%;
                 </div>
                <!-- Add this HTML structure before closing body tag -->
                <div class="lead-slider-backdrop"></div>
+<!-- HTML Lead Slider with Multi-Image Upload (No embedded PHP) -->
 <div class="lead-slider">
-
   <div class="lead-slider-header">
     <h5 class="lead-slider-title">Lead Details</h5>
-    <button type ="button" class="lead-slider-close">&times;</button>
+    <button type="button" class="lead-slider-close">&times;</button>
   </div>
+
   <div class="lead-slider-body">
-    <div class="lead-details">
-    <div class="lead-info">
-      <div class="lead-info-item">
-        <label class="lead-info-label">Name</label>
-        <h6 id="leadName" class="m-0">Loading...</h6>
-      </div>
-      <div class="lead-info-item">
-        <label class="lead-info-label">Email</label>
-        <p id="leadEmail" class="m-0">Loading...</p>
-      </div>
-      <div class="lead-info-item">
-        <label class="lead-info-label">Phone</label>
-        <p id="leadPhone" class="m-0">Loading...</p>
-      </div>
-     
-      <div class="lead-info-item">
-        <label class="lead-info-label">Alternative Phone Number</label>
-        <input type="text" class="lead-location-input" id="leadAltPhoneInput" placeholder="Enter alternative phone number">
-      </div>
-      <div class="lead-info-item">
-        <label class="lead-info-label">Working/Business</label>
-        <input type="text" class="lead-location-input" id="leadBusinessInput" placeholder="Enter working/business details">
-      </div>
-      <div class="lead-info-item">
-        <label class="lead-info-label">Stage</label>
-        <select class="lead-status-selector" id="leadStatusSelect">
-          <option value="New lead">New lead</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Qualified">Qualified</option>
-          <option value="Lead won">Lead won</option>
-          <option value="Not reachable">Not reachable</option>
-          <option value="Lead lost">Lead lost</option>
-        </select>
-      </div>
-       <div class="lead-info-item">
-        <label class="lead-info-label">Phone Status</label>
-        <select class="lead-status-selector" id="phoneStatusSelect">
-          <option value="Ringing not responded">Ringing not responded</option>
-          <option value="Switch off">Switch off</option>
-          <option value="Not reachable">Not reachable</option>
-          <option value="Busy Right now">Busy Right now</option>
-          <option value="Call connected">Call connected</option>
+    <form action="save_lead_image.php" method="POST" enctype="multipart/form-data" id="leadImageForm">
+      <div class="lead-details">
+        <input type="hidden" name="lead_id" value="42" id="leadIdInput">
 
-        </select>
-      </div>
-      <div class="lead-info-item">
-        <label class="lead-info-label">Location</label>
-        <input type="text" class="lead-location-input" id="leadLocationInput" placeholder="Enter location">
-      </div>
-      <div class="lead-info-item">
-  <label class="lead-info-label">Upload Images (Max 5)</label>
-  <input type="file" class="form-control" id="leadImageUpload" accept="image/*" multiple>
-  <div id="imageGalleryContainer" class="image-gallery" style="margin-top: 10px;">
-    <!-- Images will be added here dynamically -->
-  </div>
-</div>
+        <!-- Basic Info -->
+        <div class="lead-info">
+          <div class="lead-info-item">
+            <label class="lead-info-label">Name</label>
+            <h6 id="leadName" class="m-0">Loading...</h6>
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Email</label>
+            <p id="leadEmail" class="m-0">Loading...</p>
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Phone</label>
+            <p id="leadPhone" class="m-0">Loading...</p>
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Alternative Phone Number</label>
+            <input type="text" class="lead-location-input" id="leadAltPhoneInput" placeholder="Enter alternative phone number">
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Working/Business</label>
+            <input type="text" class="lead-location-input" id="leadBusinessInput" placeholder="Enter working/business details">
+          </div>
 
-<!-- Full-size image modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content bg-dark">
-      <div class="modal-header border-0">
-        <h5 class="modal-title text-white">Image Preview</h5>
-        <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
-          <i class="ti-close"></i>
-        </button>
-      </div>
-      <div class="modal-body p-0">
-        <div class="position-relative">
-          <img id="modalImage" class="img-fluid w-100" src="" alt="Full size image" style="max-height: 80vh; object-fit: contain;">
-          <div class="position-absolute" style="top: 50%; transform: translateY(-50%); width: 100%;">
-            <div class="d-flex justify-content-between px-3">
-              <button class="btn btn-light rounded-circle p-2" id="prevImage">
-                <i class="ti-angle-left"></i>
-              </button>
-              <button class="btn btn-light rounded-circle p-2" id="nextImage">
-                <i class="ti-angle-right"></i>
-              </button>
+          <!-- Status -->
+          <div class="lead-info-item">
+            <label class="lead-info-label">Stage</label>
+            <select class="lead-status-selector" id="leadStatusSelect">
+              <option value="New lead">New lead</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Lead won">Lead won</option>
+              <option value="Not reachable">Not reachable</option>
+              <option value="Lead lost">Lead lost</option>
+            </select>
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Phone Status</label>
+            <select class="lead-status-selector" id="phoneStatusSelect">
+              <option value="Ringing not responded">Ringing not responded</option>
+              <option value="Switch off">Switch off</option>
+              <option value="Not reachable">Not reachable</option>
+              <option value="Busy Right now">Busy Right now</option>
+              <option value="Call connected">Call connected</option>
+            </select>
+          </div>
+          <div class="lead-info-item">
+            <label class="lead-info-label">Location</label>
+            <input type="text" class="lead-location-input" id="leadLocationInput" placeholder="Enter location">
+          </div>
+
+          <!-- Image Upload -->
+          <div class="lead-info-item">
+            <label class="lead-info-label">Upload Images (Max 5)</label>
+           <input type="file" class="form-control" name="images[]" id="leadImageUpload" accept="image/*" multiple required>
+
+            <div id="imageGalleryContainer" class="image-gallery mt-2"></div>
+          </div>
+
+          <!-- Modal for Full-Size Preview -->
+          <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+              <div class="modal-content bg-dark">
+                <div class="modal-header border-0">
+                  <h5 class="modal-title text-white">Image Preview</h5>
+                  <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                  </button>
+                </div>
+                <div class="modal-body p-0">
+                  <div class="position-relative">
+                    <img id="modalImage" class="img-fluid w-100" src="" alt="Full size image" style="max-height: 80vh; object-fit: contain;">
+                    <div class="position-absolute" style="top: 50%; transform: translateY(-50%); width: 100%;">
+                      <div class="d-flex justify-content-between px-3">
+                        <button class="btn btn-light rounded-circle p-2" id="prevImage"><i class="ti-angle-left"></i></button>
+                        <button class="btn btn-light rounded-circle p-2" id="nextImage"><i class="ti-angle-right"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-between">
+                  <span class="text-white" id="imageCounter">Image 1 of 5</span>
+                  <button type="button" class="btn btn-danger" onclick="deleteCurrentImage()">
+                    <i class="ti-trash mr-1"></i> Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Loan Options -->
+          <div class="lead-info-item">
+            <label class="lead-info-label">Loan Required</label>
+            <select class="lead-status-selector" id="loanRequiredSelect">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="lead-info-item" id="loanAmountContainer" style="display: none;">
+            <label class="lead-info-label">Loan Amount</label>
+            <input type="number" class="lead-location-input" id="loanAmountInput" placeholder="Enter loan amount">
+          </div>
+
+          <!-- Links -->
+          <div class="lead-info-item">
+            <label class="lead-info-label">Links</label>
+            <div class="d-flex justify-content-end mb-2">
+              <button id="addLinkBtn" class="btn btn-primary btn-sm">+ Add Link</button>
+            </div>
+            <div id="linksContainer"></div>
+          </div>
+
+        </div> <!-- /.lead-info -->
+      </div> <!-- /.lead-details -->
+
+      <!-- Notes and Actions -->
+      <div class="note-input-container">
+        <label class="lead-info-label">Add Note</label>
+        <textarea class="note-textarea" id="noteInput" placeholder="Type your note here..."></textarea>
+        <div class="note-actions">
+          <button class="save-details-btn" id="saveDetailsBtn" type="submit">Save Details</button>
+          <button class="add-note-btn" id="addNoteBtn" type="button">Add Note</button>
         </div>
       </div>
-      <div class="modal-footer border-0 justify-content-between">
-        <span class="text-white" id="imageCounter">Image 1 of 5</span>
-        <button type="button" class="btn btn-danger" onclick="deleteCurrentImage()">
-          <i class="ti-trash mr-1"></i> Delete
-        </button>
+
+      <!-- Timeline -->
+      <div class="lead-timeline">
+        <h6 class="timeline-title">Interaction Timeline</h6>
+        <div id="timelineContainer">
+          <!-- Timeline items will be added here dynamically -->
+        </div>
       </div>
-    </div>
-  </div>
+    </form>
+  </div> <!-- /.lead-slider-body -->
 </div>
 
-     <!-- <div class="lead-info-item">
-        <label class="lead-info-label">Lead Interest</label>
-        <select class="lead-status-selector" id="leadInterestSelect">
-          <option value="Very Interested">Very Interested</option>
-          <option value="Moderately Interested">Moderately Interested</option>
-          <option value="Slightly Interested">Slightly Interested</option>
-          <option value="Not Interested">Not Interested</option>
-        </select>
-      </div>-->
-
-      <div class="lead-info-item">
-        <label class="lead-info-label">Loan Required</label>
-        <select class="lead-status-selector" id="loanRequiredSelect">
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </div>
-
-      <div class="lead-info-item" id="loanAmountContainer" style="display: none;">
-        <label class="lead-info-label">Loan Amount</label>
-        <input type="number" class="lead-location-input" id="loanAmountInput" placeholder="Enter loan amount">
-      </div>
-
-      <div class="lead-info-item">
-  <label class="lead-info-label">Links</label>
-  <div class="d-flex justify-content-end mb-2">
-    <button id="addLinkBtn" class="btn btn-primary btn-sm">
-      + Add Link
-    </button>
-  </div>
-  <div id="linksContainer"></div>
-</div>
-
-     
-    </div>
-    </div>
-
-    <div class="note-input-container">
-      <label class="lead-info-label">Add Note</label>
-      <textarea class="note-textarea" id="noteInput" placeholder="Type your note here..."></textarea>
-      <div class="note-actions">
-        <button class="save-details-btn" id="saveDetailsBtn">Save Details</button>
-        <button class="add-note-btn" id="addNoteBtn">Add Note</button>
-      </div>
-    </div>
-
-    <div class="lead-timeline">
-      <h6 class="timeline-title">Interaction Timeline</h6>
-      <div id="timelineContainer">
-        <!-- Timeline items will be added here dynamically -->
-      </div>
-    </div> 
-  </div>
-</div>
 <div class="modal fade" id="addLeadModal" tabindex="-1" aria-labelledby="addLeadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="lead.php" method="POST">
+      <form id="leadForm" action="lead.php" method="POST">
         <div class="modal-header">
           <h5 class="modal-title">Add New Lead</h5>
           <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
@@ -1108,19 +1117,34 @@ right: -100%;
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add Lead</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Add Lead</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const leadForm = document.getElementById('leadForm');
+  const submitBtn = document.getElementById('submitBtn');
   
-                <div id="styleSelector">
-                
-                </div>
-            </div>
-        </div>
-    </div>
+  if (leadForm) {
+    leadForm.addEventListener('submit', function(e) {
+      // Prevent default form submission
+      e.preventDefault();
+      
+      // Disable the submit button to prevent multiple submissions
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+      
+      // Submit the form programmatically
+      this.submit();
+    });
+  }
+});
+</script>
+<input type="file" id="leadImageUpload" name="image" accept="image/*" multiple style="display: none;">
 </div>
 
 
@@ -1186,63 +1210,62 @@ right: -100%;
 <!-- Initialize image modal -->
 
 <script>
-  // Add this JavaScript to your page
-document.addEventListener('DOMContentLoaded', function() {
-    const addLinkBtn = document.getElementById('addLinkBtn');
-    const linksContainer = document.getElementById('linksContainer');
-    
-    addLinkBtn.addEventListener('click', function() {
-        // Create new link input row
-        const linkRow = document.createElement('div');
-        linkRow.className = 'row mb-2';
-        linkRow.innerHTML = `
-            <div class="col-md-5">
-                <input type="text" class="form-control form-control-sm" placeholder="Link title">
-            </div>
-            <div class="col-md-5">
-                <input type="url" class="form-control form-control-sm" placeholder="https://example.com">
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-outline-danger btn-sm remove-link">Remove</button>
-            </div>
-        `;
-        
-        // Add remove functionality
-        const removeBtn = linkRow.querySelector('.remove-link');
-        removeBtn.addEventListener('click', function() {
-            linkRow.remove();
-        });
-        
-        // Add to container
-        linksContainer.appendChild(linkRow);
-    });
-});
 document.addEventListener("DOMContentLoaded", function () {
+  const addLinkBtn = document.getElementById('addLinkBtn');
+  const linksContainer = document.getElementById('linksContainer');
   const saveBtn = document.getElementById('saveDetailsBtn');
-  if (!saveBtn) {
-    console.error('❌ Button with ID "saveDetailsBtn" not found!');
+
+  if (!addLinkBtn || !linksContainer || !saveBtn) {
+    console.error("❌ Required element(s) not found!");
     return;
   }
-  status: "New"
 
+  // Handle adding link input rows
+  addLinkBtn.addEventListener('click', function () {
+    const linkRow = document.createElement('div');
+    linkRow.className = 'row mb-2';
+    linkRow.innerHTML = `
+      <div class="col-md-5">
+        <input type="text" class="form-control form-control-sm link-title" placeholder="Link title">
+      </div>
+      <div class="col-md-5">
+        <input type="url" class="form-control form-control-sm link-url" placeholder="https://example.com">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-danger btn-sm remove-link">Remove</button>
+      </div>
+    `;
+    linkRow.querySelector('.remove-link').addEventListener('click', () => linkRow.remove());
+    linksContainer.appendChild(linkRow);
+  });
 
+  // Handle Save Button Click
   saveBtn.addEventListener('click', function () {
+    // Gather dynamic link data
+    const links = [];
+    document.querySelectorAll('#linksContainer .row').forEach(row => {
+      const title = row.querySelector('.link-title')?.value.trim();
+      const url = row.querySelector('.link-url')?.value.trim();
+      if (title && url) {
+        links.push({ title, url });
+      }
+    });
+
     const data = {
-  
-  name: document.getElementById('leadName').innerText.trim(),
-  email: document.getElementById('leadEmail').innerText.trim(),
-  phone: document.getElementById('leadPhone').innerText.trim(),
-  alt_phone: document.getElementById('leadAltPhoneInput').value,
-  business_details: document.getElementById('leadBusinessInput').value,
-  stage: document.getElementById('leadStatusSelect').value,
-  phone_status: document.getElementById('phoneStatusSelect').value,
-  location: document.getElementById('leadLocationInput').value,
-  loan_required: document.getElementById('loanRequiredSelect').value,
-  loan_amount: document.getElementById('loanAmountInput').value,
-  links: document.getElementById('linksContainer').innerText,
-  note: document.getElementById('noteInput').value,
-  status: "New"
-};
+      name: document.getElementById('leadName').innerText.trim(),
+      email: document.getElementById('leadEmail').innerText.trim(),
+      phone: document.getElementById('leadPhone').innerText.trim(),
+      alt_phone: document.getElementById('leadAltPhoneInput').value,
+      business_details: document.getElementById('leadBusinessInput').value,
+      stage: document.getElementById('leadStatusSelect').value,
+      phone_status: document.getElementById('phoneStatusSelect').value,
+      location: document.getElementById('leadLocationInput').value,
+      loan_required: document.getElementById('loanRequiredSelect').value,
+      loan_amount: document.getElementById('loanAmountInput').value,
+      links: JSON.stringify(links), // serialized link array
+      note: document.getElementById('noteInput').value,
+      status: document.getElementById('leadStatusSelect').value
+    };
 
     console.log("Submitting:", data);
 
@@ -1251,20 +1274,22 @@ document.addEventListener("DOMContentLoaded", function () {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     })
-    .then(res => res.text())
-    .then(res => {
-      alert(res);
-      console.log(res);
-    })
-    .catch(err => {
-      console.error("❌ Fetch error:", err);
-      alert("Error saving data");
-    });
+      .then(res => res.text())
+      .then(res => {
+        alert(res);
+        console.log(res);
+        setTimeout(() => location.reload(), 500);
+      })
+      .catch(err => {
+        console.error("❌ Fetch error:", err);
+        alert("Error saving data");
+      });
   });
 });
 </script>
 
-<script>
+
+<!-- <script>
 const tableBody = document.getElementById('tableBody');
 const leadForm = document.getElementById('leadForm');
 let currentSort = 'newest';
@@ -1608,7 +1633,228 @@ leadForm?.addEventListener('submit', function (e) {
 });
 
 fetchLeads();
-</script>-->
+</script>--> 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const imageUploadInput = document.getElementById('leadImageUpload');
+  const imageGalleryContainer = document.getElementById('imageGalleryContainer');
+  let currentLead = null;
+  const leadsMap = {};
+
+  document.getElementById('saveDetailsBtn')?.addEventListener('click', saveLeadDetails);
+  imageUploadInput?.addEventListener('change', handleImageUpload);
+
+  async function handleImageUpload(e) {
+    if (!currentLead) {
+      showAlert('Please select a lead first', 'error');
+      return;
+    }
+
+    const files = e.target.files;
+    e.target.value = ''; // reset
+
+    const existingImages = document.querySelectorAll('#imageGalleryContainer .gallery-item').length;
+    if (existingImages + files.length > 5) {
+      showAlert('Maximum 5 images allowed per lead', 'error');
+      return;
+    }
+
+    for (const file of files) {
+      if (!file.type.match('image.*')) {
+        showAlert(`Skipped ${file.name} - only images allowed`, 'warning');
+        continue;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showAlert(`Skipped ${file.name} - file exceeds 5MB`, 'warning');
+        continue;
+      }
+
+      const tempId = 'temp-' + Math.random().toString(36).substr(2, 9);
+      const imageUrl = await readFileAsDataURL(file);
+
+      const imageData = {
+        id: tempId,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        src: imageUrl,
+        isTemp: true
+      };
+
+      addImageToGallery(imageData);
+      await uploadLeadImage(currentLead, file, tempId);
+    }
+  }
+
+  async function uploadLeadImage(leadId, file, tempId) {
+    const formData = new FormData();
+    formData.append('lead_id', leadId);
+    formData.append('image', file);
+
+    const tempElement = document.querySelector(`[data-temp-id="${tempId}"]`);
+    if (tempElement) {
+      tempElement.querySelector('.upload-status').textContent = 'Uploading...';
+    }
+
+    try {
+      const response = await fetch('save_lead_image.php', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!data.success) throw new Error(data.message || 'Upload failed');
+
+      if (tempElement) {
+        tempElement.removeAttribute('data-temp-id');
+        tempElement.dataset.imageId = data.image_id;
+        tempElement.querySelector('.upload-status').textContent = 'Uploaded';
+        tempElement.classList.remove('uploading');
+      }
+
+      if (!leadsMap[leadId]) leadsMap[leadId] = {};
+      if (!leadsMap[leadId].images) leadsMap[leadId].images = [];
+      leadsMap[leadId].images.push({
+        id: data.image_id,
+        url: data.image_url,
+        name: file.name,
+        uploaded_at: new Date().toISOString()
+      });
+
+      showAlert('Image uploaded successfully', 'success');
+    } catch (error) {
+      console.error('Upload error:', error);
+      if (tempElement) {
+        tempElement.querySelector('.upload-status').textContent = 'Failed';
+        tempElement.querySelector('.upload-status').classList.add('text-danger');
+      }
+    }
+  }
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function addImageToGallery(imageData) {
+    const galleryItem = document.createElement('div');
+    galleryItem.className = 'gallery-item';
+
+    if (imageData.isTemp) {
+      galleryItem.dataset.tempId = imageData.id;
+      galleryItem.classList.add('uploading');
+    } else {
+      galleryItem.dataset.imageId = imageData.id;
+    }
+
+    galleryItem.innerHTML = `
+      <img src="${imageData.src}" alt="${imageData.name}" class="img-thumbnail">
+      <div class="image-info">
+        <span class="image-name">${imageData.name}</span>
+        <button class="btn btn-sm btn-danger delete-image">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+      <div class="upload-status">${imageData.isTemp ? 'Uploading...' : 'Uploaded'}</div>
+    `;
+
+    galleryItem.querySelector('.delete-image').addEventListener('click', function () {
+      if (confirm('Are you sure you want to delete this image?')) {
+        deleteLeadImage(currentLead, imageData.id, galleryItem);
+      }
+    });
+
+    imageGalleryContainer.appendChild(galleryItem);
+  }
+
+  function deleteLeadImage(leadId, imageId, galleryItem) {
+    fetch('delete_lead_image.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: leadId, image_id: imageId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          galleryItem.remove();
+          leadsMap[leadId].images = leadsMap[leadId].images.filter(img => img.id !== imageId);
+          showAlert('Image deleted successfully', 'success');
+        } else {
+          throw new Error(data.message || 'Delete failed');
+        }
+      })
+      .catch(err => {
+        console.error('Delete error:', err);
+        showAlert('Failed to delete image: ' + err.message, 'error');
+      });
+  }
+
+  function loadLeadImages(leadId) {
+    if (!leadsMap[leadId]?.images) {
+      fetch(`get_lead_images.php?lead_id=${leadId}`)
+        .then(res => res.json())
+        .then(images => {
+          leadsMap[leadId].images = images;
+          renderLeadImages(images);
+        })
+        .catch(err => {
+          console.error('Load error:', err);
+          showAlert('Error loading images', 'error');
+        });
+    } else {
+      renderLeadImages(leadsMap[leadId].images);
+    }
+  }
+
+  function renderLeadImages(images) {
+    imageGalleryContainer.innerHTML = '';
+
+    if (!images || images.length === 0) {
+      imageGalleryContainer.innerHTML = '<p class="text-muted">No images uploaded</p>';
+      return;
+    }
+
+    images.forEach(image => {
+      addImageToGallery({
+        id: image.id,
+        name: image.file_name,
+        src: image.file_path,
+        size: image.file_size,
+        type: image.mime_type,
+        isTemp: false
+      });
+    });
+  }
+
+  function showAlert(message, type = 'info') {
+    const alertBox = document.createElement('div');
+    alertBox.className = `alert alert-${type} fixed-top m-3`;
+    alertBox.textContent = message;
+    document.body.appendChild(alertBox);
+
+    setTimeout(() => {
+      alertBox.remove();
+    }, 3000);
+  }
+
+  // Load a default lead if available
+  if (window.leadData) {
+    currentLead = window.leadData.email;
+    leadsMap[currentLead] = window.leadData;
+    loadLeadImages(currentLead);
+  }
+
+  function saveLeadDetails() {
+    console.log("Save clicked");
+  }
+});
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -1749,6 +1995,121 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = '';
     currentLead = null;
   }
+  // ✅ Integrated lead save and image upload logic
+function saveLeadDetails() {
+  if (!currentLead || !leadsMap[currentLead]) {
+    showAlert('No lead selected to save.', 'error');
+    return;
+  }
+
+  const lead = leadsMap[currentLead];
+  const newStatus = document.getElementById('leadStatusSelect').value;
+  const newLocation = document.getElementById('leadLocationInput').value.trim();
+  const newAltPhone = document.getElementById('leadAltPhoneInput').value.trim();
+  const newBusiness = document.getElementById('leadBusinessInput').value.trim();
+  const noteText = document.getElementById('noteInput').value.trim();
+  const phoneStatus = document.getElementById('phoneStatusSelect').value;
+  const loanRequired = document.getElementById('loanRequiredSelect').value;
+  const loanAmount = document.getElementById('loanAmountInput').value;
+
+  // Get all links from DOM as array
+  const links = Array.from(document.querySelectorAll('#linksContainer .row')).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return {
+      title: inputs[0]?.value.trim() || '',
+      url: inputs[1]?.value.trim() || ''
+    };
+  });
+
+  const data = {
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone,
+    alt_phone: newAltPhone,
+    business_details: newBusiness,
+    stage: newStatus,
+    phone_status: phoneStatus,
+    location: newLocation,
+    loan_required: loanRequired,
+    loan_amount: loanAmount,
+    links: JSON.stringify(links),
+    note: noteText,
+    status: newStatus
+  };
+
+  const saveBtn = document.getElementById('saveDetailsBtn');
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = 'Saving...';
+
+ fetch('save_lead.php', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+})
+  .then(response => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+  })
+  .then(res => {
+    if (res.success) {
+      showAlert('✅ Lead saved successfully!', 'success');
+
+      // ✅ Now check and upload image if selected
+      const fileInput = document.getElementById('leadImageUpload');
+      if (fileInput && fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('lead_id', res.lead_id); // Returned from save_lead.php
+        formData.append('image', fileInput.files[0]);
+
+        fetch('save_lead_image.php', {
+          method: 'POST',
+          body: formData
+        })
+          .then(r => r.json())
+          .then(imgRes => {
+            if (imgRes.success) {
+              showAlert('✅ Image uploaded successfully!', 'success');
+              console.log('Image saved to:', imgRes.image_url);
+            } else {
+              showAlert('❌ ' + imgRes.message, 'error');
+              console.error('❌ Image error:', imgRes.message);
+            }
+          })
+          .catch(err => {
+            console.error('❌ Image upload error:', err);
+            showAlert('❌ Image upload failed', 'error');
+          });
+      }
+
+      // ✅ Update local lead data
+      leadsMap[currentLead] = {
+        ...leadsMap[currentLead],
+        ...data,
+        note: data.note,
+        status: data.status,
+        location: data.location,
+        alt_phone: data.alt_phone,
+        business_details: data.business_details,
+        phone_status: data.phone_status,
+        loan_required: data.loan_required,
+        loan_amount: data.loan_amount
+      };
+    } else {
+      throw new Error(res.message || '❌ Failed to save lead');
+    }
+  })
+  .catch(error => {
+    console.error('❌ Lead save error:', error);
+    showAlert('❌ Error saving lead: ' + error.message, 'error');
+  })
+  .finally(() => {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = 'Save Details';
+  });
+
+}
+
+
   function createLinkElement(title = '', url = '') {
   const div = document.createElement('div');
   div.classList.add('link-item', 'mb-2'); // Add margin-bottom spacing
@@ -1801,43 +2162,105 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   }
+  
+  function handleLeadFormSubmit() {
+          const name = document.getElementById('name').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const phone = document.getElementById('phone').value.trim();
+          const location = document.getElementById('location').value.trim();
+          const status = document.getElementById('status').value.trim();
+          const source = document.getElementById('source').value.trim();
+          
+          if (!name || !email || !phone || !location || !status || !source) {
+              alert('All fields are required.');
+              return;
+          }
+          
+          const leadsData = getLeadsData();
+          if (leadsData[email]) {
+              alert('A lead with this email already exists!');
+              return;
+          }
+          
+          const now = new Date();
+          const dateTime = now.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+          
+          const newLead = {
+              name,
+              email,
+              phone,
+              altPhone: "",
+              business: "",
+              location,
+              source,
+              status,
+              createdAt: dateTime,
+              notes: [],
+              formState: {
+                leadStage: status,
+        phoneStatus: '',
+        
+        loanRequired: '',
+        loanAmount: ''
+              },
+              images: []
+          };
+          
+          const updatedLeadsData = getLeadsData();
+          updatedLeadsData[email] = newLead;
+          saveLeadsDataToLocalStorage(updatedLeadsData);
+          
+          if (currentSort === 'newest') {
+              const newRow = document.createElement('tr');
+              newRow.setAttribute('data-status', newLead.status);
+              newRow.setAttribute('data-created', now.getTime());
+              const statusClass = getStatusClass(newLead.status);
+              
+              newRow.innerHTML = `
+                  <td>${dateTime}</td>
+                  <td><a href="#" class="lead-name-link" style="color: #25d366; text-decoration: none; font-weight: 500;">${name}</a></td>
+                  <td>${email}</td>
+                  <td>${phone}</td>
+                  <td>${location}</td>
+                  <td>${source}</td>
+                  <td><span class="badge ${statusClass} status-badge">${status}</span></td>
+                  <td>
+                      <i class="bi bi-whatsapp whatsapp-icon"></i>
+                      <i class="bi bi-chat-left-text chat-icon"></i>
+                  </td>
+              `;
+              
+              if (tableBody.firstChild) {
+                  tableBody.insertBefore(newRow, tableBody.firstChild);
+              } else {
+                  tableBody.appendChild(newRow);
+              }
+              
+              newRow.querySelector('.whatsapp-icon').addEventListener('click', function() {
+                  openWhatsApp(phone);
+              });
+              
+              newRow.querySelector('.chat-icon').addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openSlider(email);
+              });
+              
+              newRow.querySelector('.lead-name-link').addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openSlider(email);
+              });
+          } else {
+              renderLeadsTable(updatedLeadsData);
+          }
+          
+          document.getElementById('leadForm').reset();
+          bootstrap.Modal.getInstance(document.getElementById('addLeadModal')).hide();
+      }
+      
 
 
   // Save lead details (your existing save functionality)
-  saveBtn.addEventListener('click', function() {
-    if (!currentLead) return;
-    
-    const data = {
-      name: document.getElementById('leadName').innerText.trim(),
-      email: document.getElementById('leadEmail').innerText.trim(),
-      phone: document.getElementById('leadPhone').innerText.trim(),
-      alt_phone: document.getElementById('leadAltPhoneInput').value,
-      business_details: document.getElementById('leadBusinessInput').value,
-      stage: document.getElementById('leadStatusSelect').value,
-      phone_status: document.getElementById('phoneStatusSelect').value,
-      location: document.getElementById('leadLocationInput').value,
-      loan_required: document.getElementById('loanRequiredSelect').value,
-      loan_amount: document.getElementById('loanAmountInput').value,
-      note: document.getElementById('noteInput').value,
-      status: document.getElementById('leadStatusSelect').value || "New"
-    };
-
-    fetch("http://localhost:80/form3/save_lead.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.text())
-    .then(res => {
-      alert(res);
-      console.log(res);
-    })
-    .catch(err => {
-      console.error("❌ Fetch error:", err);
-      alert("Error saving data");
-    });
-  });
-
+  
   // Close button event
   closeBtn.addEventListener('click', closeLeadSlider);
   
@@ -2858,6 +3281,8 @@ document.addEventListener('DOMContentLoaded', () => {
  // Optional: Close button functionality
   document.querySelector('.lead-slider-close').addEventListener('click', () => {
     document.querySelector('.lead-slider').classList.remove('open');
+    document.getElementById('saveDetailsBtn').addEventListener('click', saveLeadDetails);
+
   });
 });
 </script> 

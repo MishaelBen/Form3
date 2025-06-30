@@ -1,63 +1,86 @@
 <?php
+header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database connection
+// ✅ Database connection
 $conn = new mysqli("localhost", "root", "", "leads");
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    echo json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]);
+    exit;
 }
 
-// Get POST JSON data
-$data = json_decode(file_get_contents("php://input"), true);
+// ✅ Get POST data from form
+$name             = $_POST['name'] ?? '';
+$email            = $_POST['email'] ?? '';
+$phone            = $_POST['phone'] ?? '';
+$alt_phone        = $_POST['alt_phone'] ?? '';
+$business_details = $_POST['business_details'] ?? '';
+$stage            = $_POST['stage'] ?? '';
+$phone_status     = $_POST['phone_status'] ?? '';
+$location         = $_POST['location'] ?? '';
+$loan_required    = $_POST['loan_required'] ?? '';
+$loan_amount      = $_POST['loan_amount'] ?? '';
+$links            = $_POST['links'] ?? '';
+$note             = $_POST['note'] ?? '';
+$status           = $_POST['status'] ?? 'New';
 
-if (!$data) {
-  echo "❌ No data received.";
-  exit;
-}
+// ✅ Check if lead exists
+$check = $conn->prepare("SELECT id FROM client_leads WHERE email = ? LIMIT 1");
+$check->bind_param("s", $email);
+$check->execute();
+$result = $check->get_result();
 
-// Prepare and escape data
-$id = isset($data['id']) ? (int)$data['id'] : 0; // Get ID if exists
-$name = $conn->real_escape_string($data['name'] ?? '');
-$email = $conn->real_escape_string($data['email'] ?? '');
-$phone = $conn->real_escape_string($data['phone'] ?? '');
-$alt_phone = $conn->real_escape_string($data['alt_phone'] ?? '');
-$business_details = $conn->real_escape_string($data['business_details'] ?? '');
-$stage = $conn->real_escape_string($data['stage'] ?? '');
-$phone_status = $conn->real_escape_string($data['phone_status'] ?? '');
-$location = $conn->real_escape_string($data['location'] ?? '');
-$loan_required = $conn->real_escape_string($data['loan_required'] ?? '');
-$loan_amount = $conn->real_escape_string($data['loan_amount'] ?? '');
-$links = $conn->real_escape_string($data['links'] ?? '');
-$note = $conn->real_escape_string($data['note'] ?? '');
-$status = $conn->real_escape_string($data['status'] ?? 'New');
+if ($result && $result->num_rows > 0) {
+    // update lead
+    $row = $result->fetch_assoc();
+    $lead_id = $row['id'];
 
-if ($id > 0) {
-  // Update existing record
-  $sql = "UPDATE client_leads SET 
-    name='$name', email='$email', phone='$phone', alt_phone='$alt_phone',
-    business_details='$business_details', stage='$stage', phone_status='$phone_status',
-    location='$location', loan_required='$loan_required', loan_amount='$loan_amount',
-    links='$links', note='$note', status='$status'
-    WHERE id=$id";
+    $update = $conn->prepare("UPDATE client_leads SET 
+        name=?, phone=?, alt_phone=?, business_details=?, stage=?, phone_status=?,
+        location=?, loan_required=?, loan_amount=?, links=?, note=?, status=?
+        WHERE id=?");
+    $update->bind_param("ssssssssssssi", $name, $phone, $alt_phone, $business_details, $stage,
+        $phone_status, $location, $loan_required, $loan_amount,
+        $links, $note, $status, $lead_id);
+    $update->execute();
+
+    $action = "updated";
 } else {
-  // Insert new record
-  $sql = "INSERT INTO client_leads 
-    (name, email, phone, alt_phone, business_details, stage, phone_status,
-     location, loan_required, loan_amount, links, note, status)
-    VALUES (
-      '$name', '$email', '$phone', '$alt_phone', '$business_details', '$stage',
-      '$phone_status', '$location', '$loan_required', '$loan_amount', '$links', '$note', '$status'
-    )";
+    // insert new lead
+    $insert = $conn->prepare("INSERT INTO client_leads 
+        (name, email, phone, alt_phone, business_details, stage, phone_status,
+         location, loan_required, loan_amount, links, note, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $insert->bind_param("sssssssssssss", $name, $email, $phone, $alt_phone, $business_details,
+        $stage, $phone_status, $location, $loan_required, $loan_amount,
+        $links, $note, $status);
+    $insert->execute();
+    $lead_id = $insert->insert_id;
+    $lead_id = $conn->insert_id;
+
+
+    $action = "saved";
 }
 
-if ($conn->query($sql) === TRUE) {
-  echo $id > 0 ? "✅ Lead updated successfully!" : "✅ Lead saved successfully!";
-} else {
-  echo "❌ Error: " . $conn->error;
+// ✅ Handle image if uploaded
+if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+    $upload_dir = "uploads/";
+    if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+    $image_name = time() . "_" . basename($_FILES["image"]["name"]);
+    $image_path = $upload_dir . $image_name;
+
+    if (move_uploaded_file($_FILES["image"]["tmp_name"], $image_path)) {
+        $stmt = $conn->prepare("INSERT INTO lead_images (lead_id, image_path) VALUES (?, ?)");
+        $stmt->bind_param("is", $lead_id, $image_path);
+        $stmt->execute();
+    } else {
+        echo json_encode(["success" => false, "message" => "❌ Image upload failed."]);
+        exit;
+    }
 }
 
-
+echo json_encode(["success" => true, "message" => "✅ Lead $action successfully", "lead_id" => $lead_id]);
 $conn->close();
 ?>
- 
